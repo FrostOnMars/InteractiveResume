@@ -24,5 +24,10 @@ namespace InteractiveResume
         {
             InitializeComponent();
         }
+
+        private void Button1_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
