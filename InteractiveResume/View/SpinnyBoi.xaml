@@ -5,12 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:InteractiveResume.View"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="100">
+             d:DesignHeight="100" d:DesignWidth="100"
+             Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SpinnyBoi}}, Path=BackgroundBrush, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
     <Viewbox>
         <Canvas Name="LoadingDoughnutCanvas" Height="100" Width="100">
             <!-- Arc (size, [RotatingAngle, Small or Large Arc, Clockwise Direction]) -->
-            <Path Fill="#FFD9DADE" Data="M 0 50 a 50,50 0 1 1 100,0 a 50,50 0 1 1 -100,0 M 15 50 a 35,35 0 1 1 70,0 a 35,35 0 1 1 -70,0"/>
-            <Path Fill="#FF1E6E98" Data="M 0 50 a 50,50 0 0 1 50,-50 v 15 a 35,35 0 0 0 -35,35" RenderTransformOrigin="1,1">
+            <Path Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SpinnyBoi}}, Path=BackgroundBrush, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Data="M 0 50 a 50,50 0 1 1 100,0 a 50,50 0 1 1 -100,0 M 15 50 a 35,35 0 1 1 70,0 a 35,35 0 1 1 -70,0"/>
+            <Path Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SpinnyBoi}}, Path=SpinnerBrush, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Data="M 0 50 a 50,50 0 0 1 50,-50 v 15 a 35,35 0 0 0 -35,35" RenderTransformOrigin="1,1">
                 <Path.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -23,7 +24,7 @@
                     <EventTrigger RoutedEvent="Loaded">
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="(Path.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" From="0" To="360" Duration="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SpinnyBoi}}}" RepeatBehavior="Forever"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(Path.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" From="0" To="360" Duration="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SpinnyBoi}}, Path=Duration, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" RepeatBehavior="Forever"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>

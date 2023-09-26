@@ -34,13 +34,23 @@ namespace InteractiveResume.View
         public static readonly DependencyProperty DurationProperty = DependencyProperty.Register(nameof(Duration),
             typeof(Duration), typeof(SpinnyBoi), new PropertyMetadata(default(Duration)));
 
-        public Brush Brush
+        public Brush BackgroundBrush
         {
-            get => (Brush)GetValue(BrushProperty);
-            set => SetValue(BrushProperty, value);
+            get => (Brush)GetValue(BackgroundBrushProperty);
+            set => SetValue(BackgroundBrushProperty, value);
         }
 
-        public static readonly DependencyProperty BrushProperty = DependencyProperty.Register(nameof(Brush),
-            typeof(Duration), typeof(SpinnyBoi), new PropertyMetadata(default(Duration)));
+        public static readonly DependencyProperty BackgroundBrushProperty = DependencyProperty.Register(nameof(BackgroundBrush),
+            typeof(Brush), typeof(SpinnyBoi), new PropertyMetadata(Brushes.White));
+
+        public Brush SpinnerBrush
+        {
+            get => (Brush)GetValue(SpinnerBrushProperty);
+            set => SetValue(SpinnerBrushProperty, value);
+        }
+
+        public static readonly DependencyProperty SpinnerBrushProperty = DependencyProperty.Register(nameof(SpinnerBrush),
+            typeof(Brush), typeof(SpinnyBoi), new PropertyMetadata(Brushes.DodgerBlue));
+        //FFD9DADE
     }
 }
