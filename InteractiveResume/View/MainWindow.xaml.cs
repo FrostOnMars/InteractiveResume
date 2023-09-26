@@ -19,6 +19,8 @@ namespace InteractiveResume.View
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // Access the ActualHeight and ActualWidth properties of the window to automatically set the grid size
+            TheMainWindow.Height = ActualHeight;
+            TheMainWindow.Width = ActualWidth;
             MainWindowGrid.Height= ActualHeight;
             MainWindowGrid.Width = ActualWidth;
         }

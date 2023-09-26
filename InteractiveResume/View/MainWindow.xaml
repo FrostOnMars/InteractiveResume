@@ -7,11 +7,94 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:InteractiveResume.View_Model"
     Title="MainWindow"
+    Name="TheMainWindow"
     Width="800"
     Height="450"
     mc:Ignorable="d" 
     d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}">
-    <Grid Name="MainWindowGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Height="{Binding }" Margin="0, 0, 0, 0">
+
+    <!-- Styles -->
+    <Window.Resources>
+        <Style x:Key="CircularButtonStyle" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <!-- Expand the button that the mouse is hovering over by both its width and its height. -->
+                                <DoubleAnimation Storyboard.TargetProperty="Width" To="70" Duration="0:0:0.3">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="Height" To="70" Duration="0:0:0.3">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+
+                                <!-- Fill the color's background color to light green. -->
+                                <ColorAnimation Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" To="LightGreen" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <!-- Reduce the button that the mouse stopped hovering over by both its width and its height back to its original size. -->
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Width" To="50" Duration="0:0:0.3">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="Height" To="50" Duration="0:0:0.3">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+
+                                <!-- Fill the button's background color back to white. -->
+                                <ColorAnimation Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" To="White" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+
+            <!-- Button Style/Appearance -->
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="DarkBlue"/>
+            <Setter Property="BorderBrush" Value="DarkBlue"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Width" Value="50"/>
+            <!-- Adjust as needed -->
+            <Setter Property="Height" Value="50"/>
+            <!-- Adjust as needed -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Grid.Background>
+                                <SolidColorBrush Color="White"/>
+                            </Grid.Background>
+                            <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="40"
+                                    Background="{TemplateBinding Background}">
+                                <!-- Set the CornerRadius to half of Width or Height -->
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Main Window Grid -->
+    <Grid Name="MainWindowGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Height="390" Width="800">
+
+        <!-- Row Definitions -->
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" MinHeight="50"/>
             <RowDefinition Height="1*" MinHeight="50"/>
@@ -22,6 +105,7 @@
             <RowDefinition Height="1*" MinHeight="50"/>
         </Grid.RowDefinitions>
 
+        <!-- Column Definitions -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="25*" MinWidth="50"/>
             <ColumnDefinition Width="25*" MinWidth="50"/>
@@ -31,68 +115,67 @@
             <ColumnDefinition Width="25*" MinWidth="50"/>
             <ColumnDefinition Width="25*" MinWidth="50"/>
         </Grid.ColumnDefinitions>
-        <Button
-            x:Name="Button1"
-            Width="46"
-            Height="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button1_OnClick"
-            Content="Button1" />
-        <Button
-            x:Name="Button2"
-            Grid.Row="1"
-            Width="46"
-            Height="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button2_OnClick"
-            Content="Button2" />
-        <Button
-            x:Name="Button3"
-            Grid.Row="2"
-            Width="46"
-            Height="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button3_OnClick"
-            Content="Button3" />
-        <Button
-            x:Name="Button4"
-            Grid.Row="3"
-            Width="46"
-            Height="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button4_OnClick"
-            Content="Button4" />
-        <Button
-            x:Name="Button5"
-            Grid.Row="4"
-            Width="46"
-            Height="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button5_OnClick"
-            Content="Button5" />
-        <Button
-            x:Name="Button6"
-            Grid.Row="5"
-            Width="46"
-            Height="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button6_OnClick"
-            Content="Button6" />
-        <Button
-            x:Name="Button7"
-            Grid.Row="6"
-            Width="46"
-            Height="20"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Click="Button7_OnClick"
-            Content="Button7" />
+
+        <!-- StackPanel to arrange circular buttons vertically -->
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="7" Orientation="Vertical" HorizontalAlignment="Center" Height="390" Width="Auto">
+            <Button
+                x:Name="Button1"
+                Background="White"
+                Style="{StaticResource CircularButtonStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Button1_OnClick"
+                Content="Button1" />
+            <Button
+                x:Name="Button2"
+                Background="White"
+                Style="{StaticResource CircularButtonStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Button2_OnClick"
+                Content="Button2" />
+            <Button
+                x:Name="Button3"
+                Background="White"
+                Style="{StaticResource CircularButtonStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Button3_OnClick"
+                Content="Button3" />
+            <Button
+                x:Name="Button4"
+                Background="White"
+                Style="{StaticResource CircularButtonStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Button4_OnClick"
+                Content="Button4" />
+            <Button
+                x:Name="Button5"
+                Background="White"
+                Style="{StaticResource CircularButtonStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Button5_OnClick"
+                Content="Button5" />
+            <Button
+                x:Name="Button6"
+                Background="White"
+                Style="{StaticResource CircularButtonStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Button6_OnClick"
+                Content="Button6" />
+            <Button
+                x:Name="Button7"
+                Background="White"
+                Style="{StaticResource CircularButtonStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Button7_OnClick"
+                Content="Button7" />
+        </StackPanel>
+
         <TextBlock
             Grid.Row="2"
             Grid.Column="3"
@@ -103,7 +186,8 @@
             Text="{Binding FullName}" 
             FontSize="24"
             FontStyle="Normal"
-            FontWeight="Bold"/>
+            FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
+        </TextBlock>
         <Button 
             Grid.Row="3"
             Grid.Column="3"
@@ -115,6 +199,7 @@
             Name="BetterNameShowerButton"
             Command="{Binding ClickCommand}"
             />
+        <local:SpinnyBoi Grid.Row="5" Grid.Column="5"></local:SpinnyBoi>
 
     </Grid>
 </Window>
