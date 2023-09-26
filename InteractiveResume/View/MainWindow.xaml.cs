@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using InteractiveResume.View_Model;
 
 namespace InteractiveResume.View
@@ -14,6 +15,15 @@ namespace InteractiveResume.View
             DataContext = new MainWindowViewModel();
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            MediaPlayer.Play();
+        }
+
+        private void LoopThatBanjoBaby()
+        {
+            // Duration of the song. 
+            // Press play and wait for that duration
+            // When that duration expires, repeat the song from the start
+
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -23,12 +33,27 @@ namespace InteractiveResume.View
             TheMainWindow.Width = ActualWidth;
             MainWindowGrid.Height= ActualHeight;
             MainWindowGrid.Width = ActualWidth;
+            //mediaPlayer.Play();
         }
 
         private void Button1_OnClick(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                MediaPlayer.Volume = 100;
+                MediaPlayer.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Media failed to load/play. Error: {ex.Message}", "Media Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
+        private void MediaPlayer_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            MessageBox.Show($"Media failed to load/play. Error: {e.ErrorException.Message}", "Media Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
 
         private void Button2_OnClick(object sender, RoutedEventArgs e)
         {
