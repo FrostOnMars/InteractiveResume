@@ -1,6 +1,5 @@
-﻿namespace InteractiveResume.Model.Education
+﻿namespace InteractiveResume.Model.Education;
+
+internal class Summary
 {
-    internal class Summary
-    {
-    }
 }

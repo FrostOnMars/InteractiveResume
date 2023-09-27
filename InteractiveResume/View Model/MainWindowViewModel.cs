@@ -38,5 +38,5 @@ public partial class MainWindowViewModel : ObservableObject
         FullName = $"{FirstName} {LastName}";
     }
 
-    private bool CanClick => FirstName == "Mikayla" && LastName == "Baltierra";
+    private bool CanClick => FirstName == "Mikayla" && LastName == "Martin";
 }
