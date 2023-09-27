@@ -8,18 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\SpaceBanjo.mp3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\SpaceBanjo.mp3">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <None Remove="Resources\Deep Space Banjo.wav" />
+    <None Remove="Resources\SPAAAAAACE.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Deep Space Banjo.wav" />
+    <Resource Include="Resources\SPAAAAAACE.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

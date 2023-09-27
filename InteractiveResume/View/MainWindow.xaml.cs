@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using InteractiveResume.View_Model;
 
 namespace InteractiveResume.View
@@ -15,16 +16,19 @@ namespace InteractiveResume.View
             DataContext = new MainWindowViewModel();
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-            MediaPlayer.Play();
         }
 
         private void LoopThatBanjoBaby()
         {
-            // Duration of the song. 
-            // Press play and wait for that duration
-            // When that duration expires, repeat the song from the start
+            MediaPlayer.Position = TimeSpan.Zero; // Reset the media's position to the start.
+            MediaPlayer.Play(); // Play the media again.
 
         }
+        private void MediaPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            LoopThatBanjoBaby();
+        }
+
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -33,7 +37,9 @@ namespace InteractiveResume.View
             TheMainWindow.Width = ActualWidth;
             MainWindowGrid.Height= ActualHeight;
             MainWindowGrid.Width = ActualWidth;
-            //mediaPlayer.Play();
+            MediaPlayer.Source = new Uri(@"C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav", UriKind.Absolute);
+
+            MediaPlayer.Play();
         }
 
         private void Button1_OnClick(object sender, RoutedEventArgs e)
