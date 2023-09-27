@@ -33,10 +33,11 @@ public class OrbitalData
         }
 
     }
-    public void ResizeEllipseToFitScreen(ref double semiMajorAxis, ref double semiMinorAxis)
+    public void ScaleDataToFitScreen(ref double semiMajorAxis, ref double semiMinorAxis, ref double velocity)
     {
         double maxScreenHeight = 750;
         double maxScreenWidth = 750;
+        
         
 
         // Calculate the logarithmic scales for the semi-major and semi-minor axes
@@ -53,7 +54,15 @@ public class OrbitalData
         // Apply the exponential function to revert the logarithmic scaling
         semiMajorAxis = Math.Exp(scaledLogSemiMajorAxis);
         semiMinorAxis = Math.Exp(scaledLogSemiMinorAxis);
+
+        // Map the logarithmic scale for velocity to fit within the screen dimensions logarithmically
+        double logMaxVelocityKmph = logMaxScreenWidth;
+        double scaledLogVelocityKmph = logVelocityKmph - logMaxVelocityKmph;
+
+        // Apply the exponential function to revert the logarithmic scaling and convert to pixels per minute
+        velocityKmph = Math.Exp(scaledLogVelocityKmph) * (maxScreenWidth / maxScreenHeight);
     }
+}
 
     public void SpeedUpVelocity(ref double velocity)
     {
