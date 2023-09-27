@@ -26,10 +26,12 @@ public class OrbitalData
         foreach (var planet in _instance.Planets)
         {
             var jsonString = GetPlanetData(planet.Name);
+            //try catch here eventually
             if (string.IsNullOrEmpty(jsonString)) continue;
             planet.OrbitalData = JsonConvert.DeserializeObject<OrbitalDataModel>(jsonString);
 
             if(planet.OrbitalData == null) continue;
+            //another try catch
 
             // Use local variables to hold the values
             var semiMajor = planet.OrbitalData.semimajorAxis;

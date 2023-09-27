@@ -31,7 +31,7 @@ public partial class OrbitalPathControlViewModel : ObservableObject
             segment.Point = new Point(_planetViewModel.Planet.OrbitalData.semimajorAxis, _planetViewModel.Planet.OrbitalData.semiMinorAxis / 2); // Ending at the bottom of the ellipse
             segment.Size = new Size(_planetViewModel.Planet.OrbitalData.semimajorAxis / 2, _planetViewModel.Planet.OrbitalData.semiMinorAxis / 2);
             segment.IsLargeArc = true;
-            segment.SweepDirection = SweepDirection.Clockwise;
+            segment.SweepDirection = SweepDirection.Counterclockwise;
             figure.Segments.Add(segment);
             geometry.Figures.Add(figure);
             return geometry;
