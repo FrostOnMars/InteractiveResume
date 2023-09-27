@@ -2,17 +2,58 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace InteractiveResume.Model.Planets;
+namespace doubleeractiveResume.Model.Planets;
 
 [Serializable]
+
 public class OrbitalDataModel
 {
-    public string SemimajorAxis { get; set; }
-    public string Perihelion { get; set; } 
-    public string Aphelion { get; set; } 
-    public string Eccentricity { get; set; }
-    public string OrbitalPeriod { get; set; } 
-    public string OrbitalSpeed { get; set; }
+    public string alternativeName { get; set; }
+    public double aphelion { get; set; }
+    public double argPeriapsis { get; set; }
+    public object aroundPlanet { get; set; }
+    public double avgTemp { get; set; }
+    public double axialTilt { get; set; }
+    public string bodyType { get; set; }
+    public double density { get; set; }
+    public string dimension { get; set; }
+    public string discoveredBy { get; set; }
+    public string discoveryDate { get; set; }
+    public double eccentricity { get; set; }
+    public string englishName { get; set; }
+    public double equaRadius { get; set; }
+    public double escape { get; set; }
+    public double flattening { get; set; }
+    public double gravity { get; set; }
+    public string id { get; set; }
+    public double inclination { get; set; }
+    public bool isPlanet { get; set; }
+    public double longAscNode { get; set; }
+    public double mainAnomaly { get; set; }
+    public Mass mass { get; set; }
+    public double meanRadius { get; set; }
+    public object moons { get; set; }
+    public string name { get; set; }
+    [JsonPropertyName("perihelion")]
+    public double semiMinorAxis { get; set; }
+    public double polarRadius { get; set; }
+    public double semimajorAxis { get; set; }
+    public double sideralOrbit { get; set; }
+    public double sideralRotation { get; set; }
+    public Vol vol { get; set; }
+}
+
+public class Mass
+{
+    public double massExponent { get; set; }
+    public double massValue { get; set; }
+}
+
+public class Vol
+{
+    public double volExponent { get; set; }
+    public double volValue { get; set; }
 }

@@ -8,7 +8,6 @@ public sealed class BigBang : ObservableObject
 {
     private static readonly object LockObject = new object();
     private static BigBang _instance = null;
-    public static 
 
     public List<Planet> Planets { get; } = new List<Planet>();
 

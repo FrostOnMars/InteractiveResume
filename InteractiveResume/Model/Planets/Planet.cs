@@ -10,8 +10,13 @@ public class Planet
 {
     public string Name { get; set; }
     public string Description { get; set; }
-    public List<string> OrbitalData { get; set; }
+    public OrbitalDataModel OrbitalData { get; set; }
     public double Velocity { get; set; }
+#region need to move this region to the pathing region
+    public double Scale { get; set; }
+    public double Distance { get; set; }
+
+    #endregion
 
     private Planet() { }
 

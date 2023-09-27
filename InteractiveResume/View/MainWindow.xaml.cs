@@ -11,6 +11,8 @@ namespace InteractiveResume.View;
 /// </summary>
 public partial class MainWindow : Window
 {
+    //determine how big the screen is (but start with static value - 800 x 800)
+    //
     private MainWindowViewModel viewModel => DataContext as MainWindowViewModel;
     public MainWindow()
     {
@@ -46,6 +48,8 @@ public partial class MainWindow : Window
     private void Button1_OnClick(object sender, RoutedEventArgs e)
     {
         var instance = BigBang.Instance;
+        var orbitalData = new OrbitalData();
+        orbitalData.GetData();
     }
 
     private void MediaPlayer_MediaFailed(object sender, ExceptionRoutedEventArgs e)

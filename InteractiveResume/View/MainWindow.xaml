@@ -9,11 +9,11 @@
     Name="TheMainWindow"
     Title="MainWindow"
     Width="800"
-    Height="500"
+    Height="800"
     d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
     mc:Ignorable="d"
-    Loaded="MainWindow_Loaded"
-    WindowState="Maximized">
+    Loaded="MainWindow_Loaded">
+
 
     <!-- Background Image -->
     <Window.Background>
