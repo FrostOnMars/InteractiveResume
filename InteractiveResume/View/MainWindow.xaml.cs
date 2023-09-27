@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using InteractiveResume.View_Model;
 using InteractiveResume.View_Model.NASA;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InteractiveResume.View;
 
@@ -16,7 +17,7 @@ public partial class MainWindow : Window
     private MainWindowViewModel viewModel => DataContext as MainWindowViewModel;
     public MainWindow()
     {
-        DataContext = new MainWindowViewModel();
+        DataContext = ((App)Application.Current).ServiceProvider.GetRequiredService<MainWindowViewModel>(); 
         InitializeComponent();
         Loaded += MainWindow_Loaded;
     }
@@ -38,8 +39,6 @@ public partial class MainWindow : Window
         // Access the ActualHeight and ActualWidth properties of the window to automatically set the grid size
         TheMainWindow.Height = ActualHeight;
         TheMainWindow.Width = ActualWidth;
-        MainWindowGrid.Height= ActualHeight;
-        MainWindowGrid.Width = ActualWidth;
         MediaPlayer.Source = new Uri(@"C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav", UriKind.Absolute);
 
         MediaPlayer.Play();

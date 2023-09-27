@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:InteractiveResume.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:InteractiveResume.View_Model"
+    xmlns:nasa="clr-namespace:InteractiveResume.View_Model.NASA"
     Name="TheMainWindow"
     Title="MainWindow"
     Width="800"
@@ -119,52 +120,20 @@
     </Window.Resources>
 
     <!--  Main Window Grid  -->
-    <Grid
-        Name="MainWindowGrid"
+    <Canvas
+        Name="MainWindowCanvas"
         Width="800"
         Height="450"
         HorizontalAlignment="Center"
         VerticalAlignment="Center">
 
-        <!--  Row Definitions  -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" MinHeight="50" />
-            <RowDefinition Height="1*" MinHeight="50" />
-            <RowDefinition Height="1*" MinHeight="50" />
-            <RowDefinition Height="1*" MinHeight="50" />
-            <RowDefinition Height="1*" MinHeight="50" />
-            <RowDefinition Height="1*" MinHeight="50" />
-            <RowDefinition Height="1*" MinHeight="50" />
-        </Grid.RowDefinitions>
-
-        <!--  Column Definitions  -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="25*" MinWidth="50" />
-            <ColumnDefinition Width="25*" MinWidth="50" />
-            <ColumnDefinition Width="25*" MinWidth="50" />
-            <ColumnDefinition Width="67*" MinWidth="50" />
-            <ColumnDefinition Width="25*" MinWidth="50" />
-            <ColumnDefinition Width="25*" MinWidth="50" />
-            <ColumnDefinition Width="25*" MinWidth="50" />
-        </Grid.ColumnDefinitions>
-
         <!--  StackPanel to arrange circular buttons vertically  -->
-        <StackPanel
-            Grid.Row="0"
-            Grid.RowSpan="7"
-            Grid.Column="0"
+        <!--StackPanel
             Width="Auto"
             Height="450"
             HorizontalAlignment="Center"
             Orientation="Vertical">
-            <MediaElement
-                x:Name="MediaPlayer"
-                LoadedBehavior="Manual"
-                Source="C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav"
-                UnloadedBehavior="Stop"
-                Volume="0.5"
-                MediaFailed="MediaPlayer_MediaFailed"
-                MediaEnded="MediaPlayer_MediaEnded"/>
+            
             <Button
                 x:Name="Button1"
                 HorizontalAlignment="Center"
@@ -221,11 +190,9 @@
                 Content="Button7"
                 Margin="0,5,0,0"
                 Style="{StaticResource CircularButtonStyle}" />
-        </StackPanel>
+        </StackPanel>-->
 
-        <TextBlock
-            Grid.Row="2"
-            Grid.Column="3"
+        <!--<TextBlock
             Width="Auto"
             Height="Auto"
             HorizontalAlignment="Center"
@@ -237,15 +204,32 @@
             Text="{Binding FullName}" />
         <Button
             Name="BetterNameShowerButton"
-            Grid.Row="3"
-            Grid.Column="3"
             Width="Auto"
             Height="Auto"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Command="{Binding ClickCommand}"
             Content="Show me a better name!" />
-        <local:SpinnyBoi Grid.Row="5" Grid.Column="5" />
+        <local:SpinnyBoi />-->
 
-    </Grid>
+        <MediaElement
+            x:Name="MediaPlayer"
+            LoadedBehavior="Manual"
+            Source="C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav"
+            UnloadedBehavior="Stop"
+            Volume="0.5"
+            MediaFailed="MediaPlayer_MediaFailed"
+            MediaEnded="MediaPlayer_MediaEnded"/>
+
+        <ItemsControl ItemsSource="{Binding PlanetViewModels}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Canvas>
+                        <local:OrbitalPathControl DataContext="{Binding}" />
+                        <!-- You can also add other visual elements related to each planet here -->
+                    </Canvas>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Canvas>
 </Window>

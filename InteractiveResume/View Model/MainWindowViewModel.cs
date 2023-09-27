@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using InteractiveResume.View_Model.NASA;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,9 +26,19 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] 
     private string? fullName;
 
+    [ObservableProperty]
+    private ObservableCollection<PlanetViewModel> planetViewModels;
+
+
 
     public MainWindowViewModel()
     {
+        PlanetViewModels = new ObservableCollection<PlanetViewModel>();
+
+        foreach (var p in BigBang.Instance.Planets)
+        {
+            PlanetViewModels.Add(new PlanetViewModel(p));
+        }
         FullName = $"{firstName} {lastName}";
     }
 
