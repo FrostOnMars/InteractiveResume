@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using doubleeractiveResume.Model.Planets;
@@ -16,8 +17,10 @@ public class Planet
 #region need to move this region to the pathing region
     public double Scale { get; set; }
     public double Distance { get; set; }
+    public double Diameter { get; set; }
     public double PlanetaryVelocity { get; set; }
     public double EllipseCircumference { get; set; }
+    public uint ScaleFactor { get; set; }
 
     #endregion
 

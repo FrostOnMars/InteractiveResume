@@ -2,17 +2,41 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:InteractiveResume.View"
-             Width="Auto" Height="Auto">
+             xmlns:nasa="clr-namespace:InteractiveResume.View_Model.NASA"
+             Width="Auto" Height="Auto"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type nasa:PlanetViewModel}, d:IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!--  Merge the external resource dictionary for styles  -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="PlanetaryButtonDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <!-- Orbital Path -->
         <Ellipse Width="{Binding SemiMajorAxis}" 
                  Height="{Binding SemiMinorAxis}" 
-                 Stroke="Blue" 
+                 Stroke="Transparent" 
                  StrokeThickness="2"/>
+
+        <!-- Planet Button -->
+        <Button x:Name="PlanetButton"
+                Canvas.Left="{Binding X}" 
+                Canvas.Top="{Binding Y}" 
+                Style="{StaticResource PlanetaryButtonStyle}" 
+                Content="{Binding Name}"
+                Click="PlanetButton_Click">
+        </Button>
 
         <!-- Planet -->
         <local:PlanetControl x:Name="Planet" 
-                             Canvas.Left="{Binding PlanetPosition.X}" 
-                             Canvas.Top="{Binding PlanetPosition.Y}" />
+                             Canvas.Left="{Binding X}" 
+                             Canvas.Top="{Binding Y}" />
+
+
     </Grid>
 </UserControl>

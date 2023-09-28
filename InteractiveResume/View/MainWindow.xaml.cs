@@ -40,15 +40,12 @@ public partial class MainWindow : Window
         TheMainWindow.Height = ActualHeight;
         TheMainWindow.Width = ActualWidth;
         MediaPlayer.Source = new Uri(@"C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav", UriKind.Absolute);
-
         MediaPlayer.Play();
     }
 
     private void Button1_OnClick(object sender, RoutedEventArgs e)
     {
-        var instance = BigBang.Instance;
-        var orbitalData = new OrbitalData();
-        orbitalData.GetData();
+        
     }
 
     private void MediaPlayer_MediaFailed(object sender, ExceptionRoutedEventArgs e)

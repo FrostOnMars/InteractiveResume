@@ -1,12 +1,91 @@
-﻿<UserControl x:Class="InteractiveResume.View.PlanetControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:InteractiveResume.View"
-             Width="Auto" Height="Auto">
+﻿<UserControl
+    x:Class="InteractiveResume.View.PlanetControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:InteractiveResume.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:nasa="clr-namespace:InteractiveResume.View_Model.NASA"
+    xmlns:viewModel="clr-namespace:InteractiveResume.View_Model"
+    x:Name="Planet"
+    Width="{Binding Diameter}"
+    Height="{Binding Diameter}"
+    d:DataContext="{d:DesignInstance {x:Type nasa:PlanetViewModel},
+                                     d:IsDesignTimeCreatable=True}"
+    mc:Ignorable="d">
     <UserControl.Resources>
-        <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+        <ResourceDictionary>
+            <!--  Merge the external resource dictionary for styles  -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="PlanetaryButtonDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:GeometryToPathGeometryConverter x:Key="GeometryConverter" />
+            <local:SizeConverter x:Key="SizeConverter" />
+            <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
-    <Ellipse Width="{Binding Diameter}" 
-             Height="{Binding Diameter}" 
-             Fill="{Binding PlanetColor, Converter={StaticResource ColorToBrushConverter}}" />
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <!--  The hidden path for the planet's animation (for X and Y)  -->
+        <Path x:Name="PlanetPathX" Visibility="Hidden">
+            <Path.Data>
+                <PathGeometry>
+                    <PathFigure StartPoint="200,200">
+                        <ArcSegment
+                            IsLargeArc="True"
+                            Size="{Binding SemiMajorAxis, Converter={StaticResource SizeConverter}}"
+                            SweepDirection="Counterclockwise" />
+                    </PathFigure>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+
+        <Path x:Name="PlanetPathY" Visibility="Hidden">
+            <Path.Data>
+                <PathGeometry>
+                    <PathFigure StartPoint="200,200">
+                        <ArcSegment
+                            IsLargeArc="True"
+                            Size="{Binding SemiMinorAxis, Converter={StaticResource SizeConverter}}"
+                            SweepDirection="Counterclockwise" />
+                    </PathFigure>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+
+        <!--  The visual representation of the planet  -->
+        <Button x:Name="PlanetButton" Style="{StaticResource PlanetaryButtonStyle}">
+            <Button.RenderTransform>
+                <TranslateTransform x:Name="PlanetTransform" />
+            </Button.RenderTransform>
+
+            <!--  Content of the Button  -->
+            <Ellipse
+                Width="{Binding Diameter}"
+                Height="{Binding Diameter}"
+                Fill="{Binding PlanetColor, Converter={StaticResource ColorToBrushConverter}}" />
+
+            <!--  Animation  -->
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="Button.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard RepeatBehavior="Forever">
+                            <DoubleAnimationUsingPath
+                                PathGeometry="{Binding EllipsePath}"
+                                Storyboard.TargetName="PlanetTransform"
+                                Storyboard.TargetProperty="X"
+                                Duration="{Binding OrbitDuration}" />
+
+                            <DoubleAnimationUsingPath
+                                PathGeometry="{Binding EllipsePath}"
+                                Storyboard.TargetName="PlanetTransform"
+                                Storyboard.TargetProperty="Y"
+                                Duration="{Binding OrbitDuration}" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+    </Grid>
+
 </UserControl>

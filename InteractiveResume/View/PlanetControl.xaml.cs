@@ -22,8 +22,8 @@ public partial class PlanetControl : UserControl
 {
     public PlanetControl()
     {
-        this.DataContext = new PlanetControlViewModel(50 /* diameter */, "Red" /* fill */);
         InitializeComponent();
-
     }
+
+
 }

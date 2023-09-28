@@ -1,4 +1,5 @@
 ﻿using InteractiveResume.View;
+using InteractiveResume.View_Model;
 using InteractiveResume.View_Model.NASA;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -22,15 +23,23 @@ public partial class App : Application
     {
         base.OnStartup(e);
         ServiceProvider = ConfigureServices();
-        // Now use ServiceProvider to fetch your main window and show it
-        var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+
+        // Create the MainWindow
+        var mainWindow = new MainWindow
+        {
+            // Set the DataContext to the MainWindowViewModel from the service provider
+            DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>()
+        };
+
         mainWindow.Show();
     }
+
     public IServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 
-        // Register services and view models
+        // Register services, view models, etc.
+        services.AddSingleton<MainWindowViewModel>();
         services.AddTransient<OrbitalPathControlViewModel>();
         // ... any other services or view models
 

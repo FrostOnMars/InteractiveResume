@@ -122,8 +122,8 @@
     <!--  Main Window Grid  -->
     <Canvas
         Name="MainWindowCanvas"
-        Width="800"
-        Height="450"
+        Width="{Binding ActualWidth, ElementName=TheMainWindow}"
+        Height="{Binding ActualHeight, ElementName=TheMainWindow}"
         HorizontalAlignment="Center"
         VerticalAlignment="Center">
 
@@ -221,15 +221,29 @@
             MediaFailed="MediaPlayer_MediaFailed"
             MediaEnded="MediaPlayer_MediaEnded"/>
 
-        <ItemsControl ItemsSource="{Binding PlanetViewModels}">
+        <ItemsControl ItemsSource="{Binding PlanetViewModels}" Width="800" Height="800" >
+            <!-- This sets a fixed width and height for testing purposes -->
+
+            <ItemsControl.ItemsPanel>
+                <!-- This sets up the ItemsControl to use a Canvas for its items -->
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Canvas>
-                        <local:OrbitalPathControl DataContext="{Binding}" />
-                        <!-- You can also add other visual elements related to each planet here -->
-                    </Canvas>
+                    <local:OrbitalPathControl DataContext="{Binding}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
+
+            <!-- This is for positioning each item within the canvas based on its properties -->
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
         </ItemsControl>
     </Canvas>
 </Window>

@@ -32,4 +32,9 @@ public partial class OrbitalPathControl : UserControl
     {
         // Use the data from planetViewModel to initialize this ViewModel
     }
+
+    public void PlanetButton_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

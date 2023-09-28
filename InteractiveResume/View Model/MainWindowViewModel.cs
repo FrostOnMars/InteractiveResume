@@ -4,6 +4,7 @@ using InteractiveResume.View_Model.NASA;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,12 +35,18 @@ public partial class MainWindowViewModel : ObservableObject
     public MainWindowViewModel()
     {
         PlanetViewModels = new ObservableCollection<PlanetViewModel>();
+        var instance = BigBang.Instance;
+        var orbitalData = new OrbitalData();
+        orbitalData.GetData();
 
         foreach (var p in BigBang.Instance.Planets)
         {
             PlanetViewModels.Add(new PlanetViewModel(p));
         }
         FullName = $"{firstName} {lastName}";
+
+        Debug.WriteLine($"Number of Planets: {PlanetViewModels.Count}");
+
     }
 
     [RelayCommand(CanExecute = nameof(CanClick))]

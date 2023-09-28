@@ -29,8 +29,14 @@ public class OrbitalData
             //try catch here eventually
             if (string.IsNullOrEmpty(jsonString)) continue;
             planet.OrbitalData = JsonConvert.DeserializeObject<OrbitalDataModel>(jsonString);
+        }
 
-            if(planet.OrbitalData == null) continue;
+        double scaleFactor = 0;
+        
+        foreach (var planet in _instance.Planets.OrderByDescending(p => p.OrbitalData.semimajorAxis))
+        {
+            planet.ScaleFactor = 40000;
+            if (planet.OrbitalData == null) continue;
             //another try catch
 
             // Use local variables to hold the values
@@ -41,17 +47,18 @@ public class OrbitalData
             planet.PlanetaryVelocity = CalculateRealOrbitalVelocity(planet.OrbitalData.semimajorAxis,
                 planet.OrbitalData.semiMinorAxis, planet.OrbitalData.sideralOrbit);
             planet.EllipseCircumference = ResizeEllipseToFitScreen(ref semiMajor, ref semiMinor);
+            planet.EllipseCircumference = FindScaleFactorAndResize(ref semiMajor, ref semiMinor, ref scaleFactor);
 
             //TODO: "2,000" should be replaced with a value from a slider that allows the user to choose between 0 - 5000 for simulation speed.
-            velocity = ComputeSimulationVelocity(velocity, 2000);
+            velocity = ComputeSimulationVelocity(velocity, planet.ScaleFactor);
 
             // Assign the modified values back to the properties
             planet.OrbitalData.semimajorAxis = semiMajor;
             planet.OrbitalData.semiMinorAxis = semiMinor;
             planet.PlanetaryVelocity = velocity;
-            
-            //SpeedUpVelocity()
         }
+
+        ScalePlanetDiameters(_instance.Planets);
 
     }
 
@@ -74,6 +81,69 @@ public class OrbitalData
         // Calculate and return the real average orbital velocity
         return orbitCircumferenceKm / siderealOrbitSeconds * 3600;  // Multiply by 3600 to convert km/s to km/h
     }
+
+    public void ScalePlanetDiameters(List<Planet> planets)
+    {
+        // 1. Find max and min radii.
+        double maxRadius = planets.Max(p => p.OrbitalData.equaRadius);
+        double minRadius = planets.Min(p => p.OrbitalData.equaRadius);
+
+        // Define the desired average size and its range.
+        const double averageDiameter = 50;
+        const double sizeRange = 20;  // give or take based on real-life sizes
+
+        // 2. Determine scaling factor based on average size.
+        double averageRadius = planets.Average(p => p.OrbitalData.equaRadius);
+        double scaleFactor = averageDiameter / (2 * averageRadius);
+
+        // 3. Scale each planet's diameter.
+        foreach (var planet in planets)
+        {
+            double scaledDiameter = planet.OrbitalData.equaRadius * 2 * scaleFactor;
+
+            // Ensure that the scaled values fall within the desired range.
+            double diameterDifference = averageDiameter - scaledDiameter;
+            if (Math.Abs(diameterDifference) > sizeRange)
+            {
+                scaledDiameter += Math.Sign(diameterDifference) * sizeRange;
+            }
+
+            planet.Diameter = scaledDiameter;
+        }
+    }
+
+    public double FindScaleFactorAndResize(ref double semiMajorAxis, ref double semiMinorAxis, ref double existingScaleFactor )
+    {
+        double maxScreenHeight = 750;
+        double maxScreenWidth = 750;
+
+        // If we have an existing scale factor, apply it and return
+        if (existingScaleFactor != 0)
+        {
+            semiMajorAxis *= existingScaleFactor;
+            semiMinorAxis *= existingScaleFactor;
+            return existingScaleFactor;
+        }
+
+        double originalSemiMajor = semiMajorAxis;
+        double originalSemiMinor = semiMinorAxis;
+
+        // Define a reasonable threshold; this will prevent us from scaling down too much
+        double threshold = 0.95; // 95%
+
+        // Start the scale factor at 1 and decrease it iteratively
+        double scaleFactor = 1.0;
+
+        while (semiMajorAxis > maxScreenWidth || semiMinorAxis > maxScreenHeight)
+        {
+            scaleFactor *= threshold; // Decrease the scale factor
+            semiMajorAxis = originalSemiMajor * scaleFactor;
+            semiMinorAxis = originalSemiMinor * scaleFactor;
+        }
+
+        return scaleFactor;
+    }
+
 
     public double ResizeEllipseToFitScreen(ref double semiMajorAxis, ref double semiMinorAxis)
     {
