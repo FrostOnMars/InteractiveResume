@@ -25,8 +25,8 @@
 
         <!-- Planet Button -->
         <Button x:Name="PlanetButton"
-                Canvas.Left="{Binding X}" 
-                Canvas.Top="{Binding Y}" 
+                Height="Auto"
+                Width="Auto"
                 Style="{StaticResource PlanetaryButtonStyle}" 
                 Content="{Binding Name}"
                 Click="PlanetButton_Click">

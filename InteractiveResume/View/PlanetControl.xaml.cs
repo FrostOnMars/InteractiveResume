@@ -12,17 +12,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CommunityToolkit.Mvvm.ComponentModel;
+using InteractiveResume.View_Model.NASA;
 
 namespace InteractiveResume.View;
 
 /// <summary>
 /// Interaction logic for PlanetControl.xaml
 /// </summary>
+[ObservableObject]
 public partial class PlanetControl : UserControl
 {
+    [ObservableProperty]
+    private double _diameter;
     public PlanetControl()
     {
         InitializeComponent();
+        Diameter = Ellipse.Height;
     }
 
 

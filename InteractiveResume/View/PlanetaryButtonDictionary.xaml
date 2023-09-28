@@ -1,69 +1,72 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:InteractiveResume.View"
+                    xmlns:nasa="clr-namespace:InteractiveResume.View_Model.NASA">
+    <local:HalfValueConverter x:Key="HalfValueConverter" />
     <!--  Styles  -->
     <Style x:Key="PlanetaryButtonStyle" TargetType="Button">
-        <!--<Style.Triggers>
+        <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Trigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-
-                            --><!--  Expand the button that the mouse is hovering over by both its width and its height.  --><!--
+                            <!-- Expand the button by 20% -->
                             <DoubleAnimation
-                                Storyboard.TargetProperty="Width"
-                                To="70"
-                                Duration="0:0:0.3">
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                        To="1.2"
+                        Duration="0:0:0.3">
                                 <DoubleAnimation.EasingFunction>
                                     <CircleEase />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                             <DoubleAnimation
-                                Storyboard.TargetProperty="Height"
-                                To="70"
-                                Duration="0:0:0.3">
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                        To="1.2"
+                        Duration="0:0:0.3">
                                 <DoubleAnimation.EasingFunction>
                                     <CircleEase />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
 
-                            --><!--  Fill the color's background color to light green.  --><!--
+                            <!-- Fill the color's background color to light green. -->
                             <ColorAnimation
-                                Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
-                                To="CornflowerBlue"
-                                Duration="0:0:0.3" />
+                        Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                        To="CornflowerBlue"
+                        Duration="0:0:0.3" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
                 <Trigger.ExitActions>
                     <BeginStoryboard>
-                        --><!--  Reduce the button that the mouse stopped hovering over by both its width and its height back to its original size.  --><!--
                         <Storyboard>
+                            <!-- Reduce the button back to its original size. -->
                             <DoubleAnimation
-                                Storyboard.TargetProperty="Width"
-                                To="50"
-                                Duration="0:0:0.3">
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                        To="1"
+                        Duration="0:0:0.3">
                                 <DoubleAnimation.EasingFunction>
                                     <CircleEase />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                             <DoubleAnimation
-                                Storyboard.TargetProperty="Height"
-                                To="50"
-                                Duration="0:0:0.3">
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                        To="1"
+                        Duration="0:0:0.3">
                                 <DoubleAnimation.EasingFunction>
                                     <CircleEase />
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
 
-                            --><!--  Fill the button's background color back to white.  --><!--
+                            <!-- Fill the button's background color back to white. -->
                             <ColorAnimation
-                                Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
-                                To="Transparent"
-                                Duration="0:0:0.3" />
+                        Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                        To="Transparent"
+                        Duration="0:0:0.3" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.ExitActions>
             </Trigger>
-        </Style.Triggers>-->
+        </Style.Triggers>
+
 
         <!--  Button Style/Appearance  -->
         <Setter Property="Background" Value="Transparent" />
@@ -85,7 +88,8 @@
                             Background="SlateBlue"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="40">
+                            CornerRadius="{Binding Diameter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PlanetControl}}, Converter={StaticResource HalfValueConverter}}"
+                        >
                             <!--  Set the CornerRadius to half of Width or Height  -->
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>

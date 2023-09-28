@@ -25,12 +25,12 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid Width="100" Height="100">
         <!--  The hidden path for the planet's animation (for X and Y)  -->
         <Path x:Name="PlanetPathX" Visibility="Hidden">
             <Path.Data>
                 <PathGeometry>
-                    <PathFigure StartPoint="200,200">
+                    <PathFigure StartPoint="0,0">
                         <ArcSegment
                             IsLargeArc="True"
                             Size="{Binding SemiMajorAxis, Converter={StaticResource SizeConverter}}"
@@ -43,7 +43,7 @@
         <Path x:Name="PlanetPathY" Visibility="Hidden">
             <Path.Data>
                 <PathGeometry>
-                    <PathFigure StartPoint="200,200">
+                    <PathFigure StartPoint="0,0">
                         <ArcSegment
                             IsLargeArc="True"
                             Size="{Binding SemiMinorAxis, Converter={StaticResource SizeConverter}}"
@@ -61,6 +61,7 @@
 
             <!--  Content of the Button  -->
             <Ellipse
+                Name="Ellipse"
                 Width="{Binding Diameter}"
                 Height="{Binding Diameter}"
                 Fill="{Binding PlanetColor, Converter={StaticResource ColorToBrushConverter}}" />

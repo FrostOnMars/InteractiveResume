@@ -45,7 +45,7 @@ public partial class PlanetViewModel : ObservableObject
 #if DESIGN_TIME
         // Assign mock values to the properties
         // This data will be used only at design-time.
-        this.planetColor = "Violet";
+        this.planetColor = "Orange";
         this.Diameter = 50;
 #endif
     }
