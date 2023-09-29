@@ -3,11 +3,6 @@ using InteractiveResume.View_Model;
 using InteractiveResume.View_Model.NASA;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace InteractiveResume;
@@ -41,6 +36,7 @@ public partial class App : Application
         // Register services, view models, etc.
         services.AddSingleton<MainWindowViewModel>();
         services.AddTransient<OrbitalPathControlViewModel>();
+        services.AddTransient<PlanetViewModel>();
         // ... any other services or view models
 
         return services.BuildServiceProvider();

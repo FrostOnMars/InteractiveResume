@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using doubleeractiveResume.Model.Planets;
 using InteractiveResume.Model;
@@ -15,76 +14,149 @@ namespace InteractiveResume.View_Model.NASA;
 
 public class OrbitalData
 {
-    private BigBang _instance = BigBang.Instance;
-    private DataSources _dataSources = new DataSources();
-    private PlanetaryData _planetaryData { get; set; }
+    private readonly BigBang _instance = BigBang.Instance;
+    private readonly DataSources _dataSources = new();
+    public delegate void ErrorHandler(string errorMessage);
 
-    public void GetData()
+    // Define the event using the delegate.
+    public event ErrorHandler? ErrorOccurred;
+
+    /// <summary>
+    /// Retrieves the data for the specified planetary data type and performs necessary transformations.
+    /// </summary>
+    /// <param name="dataType">Type of planetary data to be fetched.</param>
+    /// <remarks>
+    /// This method makes use of other methods to fetch and transform the data.
+    /// Any exceptions encountered will raise the ErrorOccurred event.
+    /// </remarks>
+    public void GetData(PlanetaryData dataType, double screenWidth, double screenHeight)
     {
-        //var taskList = _instance.Planets.Select(planet => GetPlanetDataAsync(planet.Name)).ToList();
-        //var jObjectsResults = Task.WhenAll(taskList).Result.ToList();
-        foreach (var planet in _instance.Planets)
+        try
         {
-            var jsonString = GetPlanetData(planet.Name);
-            //try catch here eventually
-            if (string.IsNullOrEmpty(jsonString)) continue;
-            planet.OrbitalData = JsonConvert.DeserializeObject<OrbitalDataModel>(jsonString);
+            switch (dataType)
+            {
+                case PlanetaryData.OrbitalData:
+                    GetDataFromRestApi();
+                    TransformDataToUsableSizes(screenWidth, screenHeight);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
+            }
         }
-
-        double scaleFactor = 0;
-        
-        foreach (var planet in _instance.Planets.OrderByDescending(p => p.OrbitalData.semimajorAxis))
+        catch (Exception ex)
         {
-            // This is the time scale factor
-            planet.ScaleFactor = 40000;
-            if (planet.OrbitalData == null) continue;
-            // TODO: need another try catch
-
-            // Use local variables to hold the values
-            var semiMajor = planet.OrbitalData.semimajorAxis;
-            var semiMinor = CalculateSemiMinorAxis(planet.OrbitalData.semimajorAxis, planet.OrbitalData.eccentricity);
-            //var velocity = planet.PlanetaryVelocity;
-
-            //planet.PlanetaryVelocity = CalculateRealOrbitalVelocity(planet.OrbitalData.semimajorAxis,
-            //    planet.OrbitalData.semiMinorAxis, planet.OrbitalData.sideralOrbit);
-            //planet.EllipseCircumference = ResizeEllipseToFitScreen(ref semiMajor, ref semiMinor);
-            //planet.EllipseCircumference = FindScaleFactorAndResize(ref semiMajor, ref semiMinor, ref scaleFactor);
-
-            //TODO: "2,000" should be replaced with a value from a slider that allows the user to choose between 0 - 5000 for simulation speed.
-            //velocity = ComputeSimulationVelocity(velocity, planet.ScaleFactor);
-
-            // Assign the modified values back to the properties
-            planet.OrbitalData.semimajorAxis = semiMajor;
-            planet.OrbitalData.semiMinorAxis = semiMinor;
-            //planet.PlanetaryVelocity = velocity;
+            ErrorOccurred?.Invoke(ex.Message);
         }
-
-        ScaleOrbitsWithMinMax(_instance.Planets);
-        //ScalePlanetsToFitScreen(_instance.Planets);
-        ScalePlanetDiameters(_instance.Planets);
-
     }
 
-    public void ScaleOrbitsWithMinMax(List<Planet> planets)
+    /// <summary>
+    /// Transforms the raw planetary data into sizes that are usable for visualization.
+    /// </summary>
+    /// <remarks>
+    /// This method will adjust the orbital data sizes and scales. 
+    /// Any exceptions encountered will raise the ErrorOccurred event.
+    /// </remarks>
+    private void TransformDataToUsableSizes(double screenWidth, double screenHeight)
     {
-        double minScreenOrbitSize = 100;
-        double maxScreenOrbitSize = 750;
+        try
+        {
+            foreach (var planet in _instance.Planets.OrderByDescending(p => p.OrbitalData.semimajorAxis))
+            {
+                // This is the time scale factor
+                planet.ScaleFactor = 40000;
+                if (planet.OrbitalData == null) continue;
 
-        double minOrbit = planets.Min(p => p.OrbitalData.semimajorAxis);
-        double maxOrbit = planets.Max(p => p.OrbitalData.semimajorAxis);
+                // Modify the semi major and semi minor axes of the ellipse
+                planet.OrbitalData.semimajorAxis = planet.OrbitalData.semimajorAxis;
+                planet.OrbitalData.semiMinorAxis = CalculateSemiMinorAxis(planet.OrbitalData.semimajorAxis, planet.OrbitalData.eccentricity);
+            }
+
+            ScaleOrbitsWithScreenDimensions(_instance.Planets, screenWidth, screenHeight);
+            ScalePlanetDiameters(_instance.Planets);
+        }
+        catch (Exception ex)
+        {
+            // Raise the event when an error occurs.
+            ErrorOccurred?.Invoke(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Fetches planetary orbital data from a REST API and assigns it to the planet objects.
+    /// </summary>
+    /// <remarks>
+    /// Each planet's data is fetched based on its name. 
+    /// Any exceptions encountered will raise the ErrorOccurred event.
+    /// </remarks>
+    private void GetDataFromRestApi()
+    {
+        try
+        {
+            foreach (var planet in _instance.Planets)
+            {
+                var jsonString = GetPlanetDataFromRestApi(planet.Name);
+                if (string.IsNullOrEmpty(jsonString)) continue;
+                planet.OrbitalData = JsonConvert.DeserializeObject<OrbitalDataModel>(jsonString);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Raise the event when an error occurs.
+            ErrorOccurred?.Invoke(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Scales the orbits of planets based on a specified screen size range.
+    /// </summary>
+    /// <param name="planets">List of planet objects whose orbits are to be scaled.</param>
+    public static void ScaleOrbitsWithMinMax(List<Planet> planets)
+    {
+        const double minScreenOrbitSize = 100;
+        const double maxScreenOrbitSize = 1700;
+
+        var minOrbit = planets.Min(p => p.OrbitalData!.semimajorAxis);
+        var maxOrbit = planets.Max(p => p.OrbitalData!.semimajorAxis);
 
         foreach (var planet in planets)
         {
-            double originalSize = planet.OrbitalData.semimajorAxis;
+            var originalSize = planet.OrbitalData!.semimajorAxis;
 
             // Determine what percentage the original size is of the total range
-            double percentOfOriginalRange = (originalSize - minOrbit) / (maxOrbit - minOrbit);
+            var percentOfOriginalRange = (originalSize - minOrbit) / (maxOrbit - minOrbit);
 
             // Apply this percentage to the screen size range
-            double screenSize = minScreenOrbitSize + (percentOfOriginalRange * (maxScreenOrbitSize - minScreenOrbitSize));
+            var screenSize = minScreenOrbitSize + (percentOfOriginalRange * (maxScreenOrbitSize - minScreenOrbitSize));
 
             // Calculate the scaling factor for the semimajorAxis
-            double scalingFactor = screenSize / originalSize;
+            var scalingFactor = screenSize / originalSize;
+
+            planet.OrbitalData.semimajorAxis = screenSize;
+
+            // Apply the same scaling factor to the semiMinorAxis
+            planet.OrbitalData.semiMinorAxis *= scalingFactor;
+        }
+    }
+
+    public static void ScaleOrbitsWithScreenDimensions(List<Planet> planets, double screenWidth, double screenHeight)
+    {
+        const double minScreenOrbitSize = 100;
+
+        var minOrbit = planets.Min(p => p.OrbitalData!.semimajorAxis);
+        var maxOrbit = planets.Max(p => p.OrbitalData!.semimajorAxis);
+
+        foreach (var planet in planets)
+        {
+            var originalSize = planet.OrbitalData!.semimajorAxis;
+
+            // Determine what percentage the original size is of the total range
+            var percentOfOriginalRange = (originalSize - minOrbit) / (maxOrbit - minOrbit);
+
+            // Apply this percentage to the screen size range
+            var screenSize = minScreenOrbitSize + (percentOfOriginalRange * (screenWidth - minScreenOrbitSize));
+
+            // Calculate the scaling factor for the semimajorAxis
+            var scalingFactor = screenSize / originalSize;
 
             planet.OrbitalData.semimajorAxis = screenSize;
 
@@ -94,6 +166,79 @@ public class OrbitalData
     }
 
 
+    /// <summary>
+    /// Calculates the semi-minor axis of an ellipse given its semi-major axis and eccentricity.
+    /// </summary>
+    /// <param name="semiMajorAxis">The semi-major axis of the ellipse.</param>
+    /// <param name="eccentricity">The eccentricity of the ellipse.</param>
+    /// <returns>The calculated semi-minor axis value.</returns>
+    public static double CalculateSemiMinorAxis(double semiMajorAxis, double eccentricity)
+    {
+        return semiMajorAxis * Math.Sqrt(1 - eccentricity * eccentricity);
+    }
+
+    /// <summary>
+    /// Scales the diameters of planets for visualization purposes.
+    /// </summary>
+    /// <param name="planets">List of planet objects whose diameters are to be scaled.</param>
+    /// <remarks>
+    /// This method adjusts the diameters of planets based on their equatorial radii.
+    /// </remarks>
+    public static void ScalePlanetDiameters(List<Planet> planets)
+    {
+        if (planets.Any(p => p.OrbitalData == null)) return;
+        // Define the minimum and maximum diameters for the display.
+        const double minDiameter = 20;
+        const double maxDiameter = 150;
+
+        // 1. Find the minimum and maximum equatorial radius.
+        var minRadius = planets.Min(p => p.OrbitalData!.equaRadius);
+        var maxRadius = planets.Max(p => p.OrbitalData!.equaRadius);
+
+        // 2. Determine the scaling factor based on both minimum and maximum planet sizes.
+        foreach (var planet in planets)
+        {
+            var originalDiameter = 2 * planet.OrbitalData!.equaRadius;
+
+            // Determine what percentage the original diameter is of the total range.
+            var percentOfOriginalRange = (originalDiameter - (2 * minRadius)) / (2 * (maxRadius - minRadius));
+
+            // Apply this percentage to the screen size range.
+            var scaledDiameter = minDiameter + (percentOfOriginalRange * (maxDiameter - minDiameter));
+
+            planet.Diameter = scaledDiameter;
+        }
+    }
+
+    /// <summary>
+    /// Retrieves planetary data for the specified planet from a REST API.
+    /// </summary>
+    /// <param name="planetName">Name of the planet to fetch data for.</param>
+    /// <returns>The JSON string representing the orbital data of the specified planet or null if the request was not successful.</returns>
+    public string? GetPlanetDataFromRestApi(string planetName)
+    {
+        var client = new RestClient(_dataSources.SolarSystemAPI.AssembleURL(PlanetaryData.OrbitalData));
+        var request = new RestRequest($"{_dataSources.SolarSystemAPI.AssembleURL(PlanetaryData.OrbitalData)}{planetName}");
+
+        var response = client.Execute(request);
+
+        return response.IsSuccessful 
+            ? response.Content 
+            : string.Empty;
+    }
+
+    #region Obsolete Methods
+
+    public static double SigmoidScale(double value, double maxValue, double minValue)
+    {
+        var range = maxValue - minValue;
+        var mid = (maxValue + minValue) / 2;
+
+        var k = 50.0 / range;  // This controls the 'steepness' of the curve. You can adjust as required.
+        var xShifted = (value - mid) * k;
+
+        return 1.0 / (1.0 + Math.Exp(-xShifted));
+    }
 
     public void ScalePlanetsToFitScreen(List<Planet> planets)
     {
@@ -101,43 +246,22 @@ public class OrbitalData
         double minScreenDimension = 10;  // Adjust this as per your requirements.
 
         // 1. Determine the Range
-        double maxSemiMajor = planets.Max(p => p.OrbitalData.semimajorAxis);
-        double minSemiMajor = planets.Min(p => p.OrbitalData.semimajorAxis);
+        var maxSemiMajor = planets.Max(p => p.OrbitalData.semimajorAxis);
+        var minSemiMajor = planets.Min(p => p.OrbitalData.semimajorAxis);
 
         foreach (var planet in planets)
         {
             // 2. Scale the Values with Sigmoid
-            double scaledSemiMajor = SigmoidScale(planet.OrbitalData.semimajorAxis, maxSemiMajor, minSemiMajor);
+            var scaledSemiMajor = SigmoidScale(planet.OrbitalData.semimajorAxis, maxSemiMajor, minSemiMajor);
 
             // 3. Linearly Scale the Sigmoid Value to Screen Dimensions
             planet.OrbitalData.semimajorAxis = minScreenDimension + (scaledSemiMajor * (maxScreenDimension - minScreenDimension));
 
             // Ensure semi-minor axis is scaled accordingly to maintain the ellipse's proportions
-            double aspectRatio = planet.OrbitalData.semiMinorAxis / planet.OrbitalData.semimajorAxis;
+            var aspectRatio = planet.OrbitalData.semiMinorAxis / planet.OrbitalData.semimajorAxis;
             planet.OrbitalData.semiMinorAxis = planet.OrbitalData.semimajorAxis * aspectRatio;
         }
     }
-
-
-    public double SigmoidScale(double value, double maxValue, double minValue)
-    {
-        double range = maxValue - minValue;
-        double mid = (maxValue + minValue) / 2;
-
-        double k = 50.0 / range;  // This controls the 'steepness' of the curve. You can adjust as required.
-        double xShifted = (value - mid) * k;
-
-        return 1.0 / (1.0 + Math.Exp(-xShifted));
-    }
-
-
-
-
-    public double CalculateSemiMinorAxis(double semiMajorAxis, double eccentricity)
-    {
-        return semiMajorAxis * Math.Sqrt(1 - eccentricity * eccentricity);
-    }
-
 
     /// <summary>
     /// Calculates the average orbital velocity of a planet with an elliptical orbit.
@@ -153,40 +277,13 @@ public class OrbitalData
 
         // Calculate the approximate circumference of the real elliptical orbit using Ramanujan's formula
         var orbitCircumferenceKm = Math.PI * (3 * (semiMajorAxisKm + semiMinorAxisKm) -
-                                              Math.Sqrt((3 * semiMajorAxisKm + semiMinorAxisKm) * (semiMajorAxisKm + 3 * semiMinorAxisKm)));
+                                              Math.Sqrt((3 * semiMajorAxisKm + semiMinorAxisKm) * (semiMajorAxisKm + (3 * semiMinorAxisKm))));
 
         // Calculate and return the real average orbital velocity
         return orbitCircumferenceKm / siderealOrbitSeconds * 3600;  // Multiply by 3600 to convert km/s to km/h
     }
 
-    public void ScalePlanetDiameters(List<Planet> planets)
-    {
-        // Define the minimum and maximum diameters for the display.
-        const double minDiameter = 20;
-        const double maxDiameter = 150;
-
-        // 1. Find the minimum and maximum equatorial radius.
-        double minRadius = planets.Min(p => p.OrbitalData.equaRadius);
-        double maxRadius = planets.Max(p => p.OrbitalData.equaRadius);
-
-        // 2. Determine the scaling factor based on both minimum and maximum planet sizes.
-        foreach (var planet in planets)
-        {
-            double originalDiameter = 2 * planet.OrbitalData.equaRadius;
-
-            // Determine what percentage the original diameter is of the total range.
-            double percentOfOriginalRange = (originalDiameter - 2 * minRadius) / (2 * (maxRadius - minRadius));
-
-            // Apply this percentage to the screen size range.
-            double scaledDiameter = minDiameter + (percentOfOriginalRange * (maxDiameter - minDiameter));
-
-            planet.Diameter = scaledDiameter;
-        }
-    }
-
-
-
-    public double FindScaleFactorAndResize(ref double semiMajorAxis, ref double semiMinorAxis, ref double existingScaleFactor )
+    public double FindScaleFactorAndResize(ref double semiMajorAxis, ref double semiMinorAxis, ref double existingScaleFactor)
     {
         double maxScreenHeight = 750;
         double maxScreenWidth = 750;
@@ -199,14 +296,14 @@ public class OrbitalData
             return existingScaleFactor;
         }
 
-        double originalSemiMajor = semiMajorAxis;
-        double originalSemiMinor = semiMinorAxis;
+        var originalSemiMajor = semiMajorAxis;
+        var originalSemiMinor = semiMinorAxis;
 
         // Define a reasonable threshold; this will prevent us from scaling down too much
-        double threshold = 0.95; // 95%
+        var threshold = 0.95; // 95%
 
         // Start the scale factor at 1 and decrease it iteratively
-        double scaleFactor = 1.0;
+        var scaleFactor = 1.0;
 
         while (semiMajorAxis > maxScreenWidth || semiMinorAxis > maxScreenHeight)
         {
@@ -261,17 +358,5 @@ public class OrbitalData
         }
     }
 
-    public string? GetPlanetData(string planetName)
-    {
-        var client = new RestClient(_dataSources.SolarSystemAPI.AssembleURL(PlanetaryData.OrbitalData));
-        var request = new RestRequest($"https://api.le-systeme-solaire.net/rest/bodies/{planetName}", Method.Get);
-
-        var response = client.Execute(request);
-
-        return response.IsSuccessful 
-            ? response.Content 
-            : string.Empty;
-    }
-
-
+    #endregion
 }

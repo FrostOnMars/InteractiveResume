@@ -1,15 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace InteractiveResume.View
 {
-    public class HalfValueConverter : IValueConverter
+    public class HalfValueNegateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is double d)
-                return d / 2;
+            {
+                return -(d / 2.0) + 400; // Add 400 offset for centering
+            }
             return 0;
         }
 
@@ -18,5 +24,6 @@ namespace InteractiveResume.View
             throw new NotImplementedException();
         }
     }
+
 
 }

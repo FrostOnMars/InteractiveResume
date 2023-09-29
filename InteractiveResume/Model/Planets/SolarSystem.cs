@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InteractiveResume.Model.Planets;
+﻿namespace InteractiveResume.Model.Planets;
 
 public class SolarSystem
 {

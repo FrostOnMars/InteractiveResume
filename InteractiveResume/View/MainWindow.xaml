@@ -5,22 +5,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:InteractiveResume.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModel="clr-namespace:InteractiveResume.View_Model"
     xmlns:nasa="clr-namespace:InteractiveResume.View_Model.NASA"
+    xmlns:viewModel="clr-namespace:InteractiveResume.View_Model"
     Name="TheMainWindow"
     Title="MainWindow"
     Width="800"
     Height="800"
     d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
-    mc:Ignorable="d"
     Loaded="MainWindow_Loaded"
-    
-    WindowState="Maximized">
+    WindowState="Maximized"
+    mc:Ignorable="d">
 
 
-    <!-- Background Image -->
+    <!--  Background Image  -->
     <Window.Background>
-        <ImageBrush ImageSource="/Resources/SPAAAAAACE.png"/>
+        <ImageBrush ImageSource="/Resources/SPAAAAAACE.png" />
     </Window.Background>
 
     <!--  Styles  -->
@@ -120,116 +119,62 @@
             </Setter>
         </Style>
     </Window.Resources>
-
-    <!--  Main Window Grid  -->
-    <Canvas
-        Name="MainWindowCanvas"
-        Width="{Binding ActualWidth, ElementName=TheMainWindow}"
-        Height="{Binding ActualHeight, ElementName=TheMainWindow}"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center">
-
-        <!--  StackPanel to arrange circular buttons vertically  -->
-        <!--StackPanel
-            Width="Auto"
-            Height="450"
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <!--  Main Window Grid  -->
+        <Canvas
+            Name="MainWindowCanvas"
+            MinHeight="{Binding ElementName=TheMainWindow, Path=ActualHeight}"
+            MinWidth="{Binding ElementName=TheMainWindow, Path=ActualWidth}"
             HorizontalAlignment="Center"
-            Orientation="Vertical">
-            
-            <Button
-                x:Name="Button1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="Button1_OnClick"
-                Content="Button1"
-                Margin="0,0,0,5"
-                Style="{StaticResource CircularButtonStyle}" />
-            <Button
-                x:Name="Button2"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="Button2_OnClick"
-                Content="Button2"
-                Margin="0,5,0,5"
-                Style="{StaticResource CircularButtonStyle}" />
-            <Button
-                x:Name="Button3"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="Button3_OnClick"
-                Content="Button3"
-                Margin="0,5,0,5"
-                Style="{StaticResource CircularButtonStyle}" />
-            <Button
-                x:Name="Button4"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="Button4_OnClick"
-                Content="Button4"
-                Margin="0,5,0,5"
-                Style="{StaticResource CircularButtonStyle}" />
-            <Button
-                x:Name="Button5"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="Button5_OnClick"
-                Content="Button5"
-                Margin="0,5,0,5"
-                Style="{StaticResource CircularButtonStyle}" />
-            <Button
-                x:Name="Button6"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="Button6_OnClick"
-                Content="Button6"
-                Margin="0,5,0,5"
-                Style="{StaticResource CircularButtonStyle}" />
-            <Button
-                x:Name="Button7"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="Button7_OnClick"
-                Content="Button7"
-                Margin="0,5,0,0"
-                Style="{StaticResource CircularButtonStyle}" />
-        </StackPanel>-->
+            VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+            <!--<Canvas.RenderTransform>
+                --><!--<TransformGroup>
+                    <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>--><!--
+            </Canvas.RenderTransform>-->
+            <MediaElement
+                x:Name="MediaPlayer"
+                LoadedBehavior="Manual"
+                MediaEnded="MediaPlayer_MediaEnded"
+                MediaFailed="MediaPlayer_MediaFailed"
+                Source="C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav"
+                UnloadedBehavior="Stop"
+                Volume="0.5" />
 
-        <!--<TextBlock
-            Width="Auto"
-            Height="Auto"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="24"
-            FontStyle="Normal"
-            FontWeight="Bold"
-            RenderTransformOrigin="0.5,0.5"
-            Text="{Binding FullName}" />
-        <Button
-            Name="BetterNameShowerButton"
-            Width="Auto"
-            Height="Auto"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Command="{Binding ClickCommand}"
-            Content="Show me a better name!" />
-        <local:SpinnyBoi />-->
+            <ItemsControl ItemsSource="{Binding PlanetViewModels}">
+                <!-- Change the ItemsPanel to a Canvas so items can overlap -->
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-        <MediaElement
-            x:Name="MediaPlayer"
-            LoadedBehavior="Manual"
-            Source="C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav"
-            UnloadedBehavior="Stop"
-            Volume="0.5"
-            MediaFailed="MediaPlayer_MediaFailed"
-            MediaEnded="MediaPlayer_MediaEnded"/>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:PlanetControl />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
 
 
-
-        <!-- Here, bind to a collection of all your planet view models -->
+            <!--  Here, bind to a collection of all your planet view models  -->
+            <!--
         <ItemsControl ItemsSource="{Binding PlanetViewModels}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <!-- Here, bind to the individual properties of each planet view model -->
+            -->
+            <!--  Here, bind to the individual properties of each planet view model  -->
+            <!--
                     <local:PlanetControl />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -240,8 +185,9 @@
                     <Setter Property="Canvas.Top" Value="{Binding Y}" />
                 </Style>
             </ItemsControl.ItemContainerStyle>
-        </ItemsControl>
+        </ItemsControl>-->
 
 
-    </Canvas>
+        </Canvas>
+    </ScrollViewer>
 </Window>

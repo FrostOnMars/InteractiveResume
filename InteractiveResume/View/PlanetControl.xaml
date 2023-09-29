@@ -8,9 +8,9 @@
     xmlns:nasa="clr-namespace:InteractiveResume.View_Model.NASA"
     xmlns:viewModel="clr-namespace:InteractiveResume.View_Model"
     x:Name="Planet"
-    Background="Transparent"
     d:DataContext="{d:DesignInstance {x:Type nasa:PlanetViewModel},
                                      d:IsDesignTimeCreatable=True}"
+    Background="Transparent"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -18,7 +18,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="PlanetaryButtonDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <local:GeometryToPathGeometryConverter x:Key="GeometryConverter" />
+            <local:CenteringConverter x:Key="CenteringConverter" />
             <local:SizeConverter x:Key="SizeConverter" />
             <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
         </ResourceDictionary>
@@ -26,7 +26,10 @@
 
     <Grid>
         <!--  The visible path for the planet's animation (for X)  -->
-        <Path x:Name="PlanetPathX" Stroke="Purple" StrokeThickness="2">
+        <Path
+            x:Name="PlanetPathX"
+            Stroke="Purple"
+            StrokeThickness="2">
             <Path.Data>
                 <PathGeometry>
                     <PathFigure StartPoint="0,0">
@@ -40,7 +43,10 @@
         </Path>
 
         <!--  The visible path for the planet's animation (for Y)  -->
-        <Path x:Name="PlanetPathY" Stroke="Purple" StrokeThickness="2">
+        <Path
+            x:Name="PlanetPathY"
+            Stroke="Purple"
+            StrokeThickness="2">
             <Path.Data>
                 <PathGeometry>
                     <PathFigure StartPoint="0,0">
@@ -56,7 +62,7 @@
         <!--  The visual representation of the planet  -->
         <Button x:Name="PlanetButton" Style="{StaticResource PlanetaryButtonStyle}">
             <Button.RenderTransform>
-                <TranslateTransform x:Name="PlanetTransform" X="{Binding X}" Y="{Binding Y}" />
+                <TranslateTransform x:Name="PlanetTransform" X="{Binding X, Converter={StaticResource CenteringConverter}}" Y="{Binding Y, Converter={StaticResource CenteringConverter}}" />
 
             </Button.RenderTransform>
 
@@ -73,15 +79,9 @@
                     <BeginStoryboard>
                         <Storyboard RepeatBehavior="Forever">
                             <DoubleAnimationUsingPath
-                                PathGeometry="{Binding XEllipsePath}"
+                                PathGeometry="{Binding FullEllipsePath}"
                                 Storyboard.TargetName="PlanetTransform"
                                 Storyboard.TargetProperty="X"
-                                Duration="{Binding OrbitDuration}" />
-
-                            <DoubleAnimationUsingPath
-                                PathGeometry="{Binding YEllipsePath}"
-                                Storyboard.TargetName="PlanetTransform"
-                                Storyboard.TargetProperty="Y"
                                 Duration="{Binding OrbitDuration}" />
                         </Storyboard>
                     </BeginStoryboard>

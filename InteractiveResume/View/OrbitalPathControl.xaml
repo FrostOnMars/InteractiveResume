@@ -16,12 +16,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Canvas Height="800" Width="800">
+    <Canvas>
 
         <!-- Orbital Path -->
         <Ellipse Width="{Binding SemiMajorAxis}" 
                  Height="{Binding SemiMinorAxis}" 
-                 Stroke="Transparent" 
+                 Stroke="Blue" 
                  StrokeThickness="2"/>
 
         <!-- Planet Control -->

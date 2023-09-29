@@ -1,10 +1,5 @@
 ﻿using InteractiveResume.Model.Planets;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -35,7 +30,10 @@ public partial class PlanetViewModel : ObservableObject
 
     [ObservableProperty] public string _name;
 
-    public void UpdateCoordinates()
+
+
+    public Duration OrbitDuration => ComputeScaledOrbitDuration();
+    public static void UpdateCoordinates()
     {
         
     }
@@ -63,30 +61,44 @@ public partial class PlanetViewModel : ObservableObject
         Name = planet.Name;
     }
 
-    public PathGeometry EllipsePath
+
+    public PathGeometry FullEllipsePath
     {
         get
         {
-            var geometry = new PathGeometry();
+            var ellipse = new EllipseGeometry
+            {
+                Center = new Point(0, 0),
+                RadiusX = Planet.OrbitalData.semimajorAxis,
+                RadiusY = Planet.OrbitalData.semiMinorAxis
+            };
+
             var figure = new PathFigure
             {
-                StartPoint = new Point(0, Planet.OrbitalData.semiMinorAxis / 2),  // Starting at the top of the ellipse
+                StartPoint = new Point(Planet.OrbitalData.semimajorAxis, 0),
                 IsClosed = true
             };
-            var segment = new ArcSegment
+
+            figure.Segments.Add(new ArcSegment
             {
-                Point = new Point(Planet.OrbitalData.semimajorAxis, Planet.OrbitalData.semiMinorAxis / 2), // Ending at the bottom of the ellipse
-                Size = new Size(Planet.OrbitalData.semimajorAxis / 2, Planet.OrbitalData.semiMinorAxis / 2),
+                Point = new Point(-Planet.OrbitalData.semimajorAxis, 0),
+                Size = new Size(Planet.OrbitalData.semimajorAxis, Planet.OrbitalData.semiMinorAxis),
                 IsLargeArc = true,
                 SweepDirection = SweepDirection.Clockwise
-            };
-            figure.Segments.Add(segment);
-            geometry.Figures.Add(figure);
-            var testx = XEllipsePath;
-            var testy = YEllipsePath;
-            return geometry;
+            });
+
+            figure.Segments.Add(new ArcSegment
+            {
+                Point = new Point(Planet.OrbitalData.semimajorAxis, 0),
+                Size = new Size(Planet.OrbitalData.semimajorAxis, Planet.OrbitalData.semiMinorAxis),
+                IsLargeArc = true,
+                SweepDirection = SweepDirection.Clockwise
+            });
+
+            return new PathGeometry { Figures = { figure } };
         }
     }
+
 
     public PathGeometry XEllipsePath
     {
@@ -95,15 +107,15 @@ public partial class PlanetViewModel : ObservableObject
             var geometry = new PathGeometry();
             var figure = new PathFigure
             {
-                StartPoint = new Point(_planet.OrbitalData.semimajorAxis, 0), // half the width of the ellipse, starting from the rightmost point
-                IsClosed = true
+                // Starting at the right-most point of the ellipse
+                StartPoint = new Point(Planet.OrbitalData.semimajorAxis, 0),
+                IsClosed = false
             };
 
             var segment = new ArcSegment
             {
-                Point = new Point(-_planet.OrbitalData.semimajorAxis, 0), // half the width of the ellipse, moving to the leftmost point
-
-                Size = new Size(_planet.OrbitalData.semimajorAxis, _planet.OrbitalData.semiMinorAxis),
+                // Orbit the entire ellipse
+                Size = new Size(Planet.OrbitalData.semimajorAxis, Planet.OrbitalData.semiMinorAxis),
                 IsLargeArc = true,
                 SweepDirection = SweepDirection.Clockwise
             };
@@ -121,15 +133,15 @@ public partial class PlanetViewModel : ObservableObject
             var geometry = new PathGeometry();
             var figure = new PathFigure
             {
-                StartPoint = new Point(0, _planet.OrbitalData.semiMinorAxis), // half the height of the ellipse, starting from the bottommost point
-                IsClosed = true
+                // Starting at the top-most point of the ellipse
+                StartPoint = new Point(0, -Planet.OrbitalData.semiMinorAxis),
+                IsClosed = false
             };
 
             var segment = new ArcSegment
             {
-                Point = new Point(0, -_planet.OrbitalData.semiMinorAxis), // half the height of the ellipse, moving to the topmost point
-
-                Size = new Size(_planet.OrbitalData.semimajorAxis, _planet.OrbitalData.semiMinorAxis),
+                // Orbit the entire ellipse
+                Size = new Size(Planet.OrbitalData.semimajorAxis, Planet.OrbitalData.semiMinorAxis),
                 IsLargeArc = true,
                 SweepDirection = SweepDirection.Clockwise
             };
@@ -140,25 +152,16 @@ public partial class PlanetViewModel : ObservableObject
         }
     }
 
-
-
-
-
-
-    public Duration OrbitDuration => ComputeScaledOrbitDuration();
-
     public Duration ComputeScaledOrbitDuration()
     {
-        Planet planet = _planet;
-        double originalOrbitTime = _planet.OrbitalData.sideralOrbit; // Original orbit time in days
+        if (Planet.OrbitalData == null) return new Duration();
+        var planet = Planet;
+        var originalOrbitTime = planet.OrbitalData.sideralOrbit; // Original orbit time in days
         double scaleFactor = planet.ScaleFactor + 3000000; // Assuming scaleFactor is between 0 and 5000
         //TODO: REMOVE ADDITION TO SCALE FACTOR. TESTING THIS ONLY.
-        double scaledTime = (originalOrbitTime / scaleFactor);
+        var scaledTime = (originalOrbitTime / scaleFactor);
 
-        // Convert the scaled time from days to the desired unit for the animation. 
-        // Here, I'm converting days to seconds for the sake of example.
-        // If you want a different time unit, adjust accordingly.
-        double scaledTimeInSeconds = scaledTime * 24 * 60 * 60;
+        var scaledTimeInSeconds = scaledTime * 24 * 60 * 60;
 
         return new Duration(TimeSpan.FromSeconds(scaledTimeInSeconds));
     }
@@ -168,7 +171,7 @@ public partial class PlanetViewModel : ObservableObject
     /// </summary>
     /// <param name="degrees">Angle in degrees.</param>
     /// <returns>Angle in radians.</returns>
-    double DegreesToRadians(double degrees)
+    private static double DegreesToRadians(double degrees)
     {
         return degrees * Math.PI / 180.0;
     }
@@ -181,7 +184,7 @@ public partial class PlanetViewModel : ObservableObject
     /// <param name="e">Eccentricity of the orbit.</param>
     /// <param name="nu">True anomaly (angle between the direction of periapsis and the current position).</param>
     /// <returns>Distance from the central body.</returns>
-    double CalculateDistance(double a, double e, double nu)
+    private static double CalculateDistance(double a, double e, double nu)
     {
         return (a * (1 - e * e)) / (1 + e * Math.Cos(nu));
     }
@@ -193,10 +196,10 @@ public partial class PlanetViewModel : ObservableObject
     /// <param name="nu">True anomaly.</param>
     /// <param name="omega">Argument of periapsis (angle between the reference direction and the periapsis).</param>
     /// <returns>Position (x, y) in a 2D plane.</returns>
-    (double, double) CalculatePosition(double r, double nu, double omega)
+    private static (double, double) CalculatePosition(double r, double nu, double omega)
     {
-        double x = r * Math.Cos(nu + omega);
-        double y = r * Math.Sin(nu + omega);
+        var x = r * Math.Cos(nu + omega);
+        var y = r * Math.Sin(nu + omega);
         return (x, y);
     }
 
@@ -207,35 +210,17 @@ public partial class PlanetViewModel : ObservableObject
     public Point GetStartingCoordinates()
     {
         // Extracting the orbital elements from the planet's data
-        double a = _planet.OrbitalData.semimajorAxis; // Semi-major axis
-        double e = _planet.OrbitalData.eccentricity;  // Eccentricity of the orbit
-        double nu = DegreesToRadians(_planet.OrbitalData.mainAnomaly); // True anomaly in radians
-        double omega = DegreesToRadians(_planet.OrbitalData.argPeriapsis); // Argument of periapsis in radians
+        var a = _planet.OrbitalData.semimajorAxis; // Semi-major axis
+        var e = _planet.OrbitalData.eccentricity;  // Eccentricity of the orbit
+        var nu = DegreesToRadians(_planet.OrbitalData.mainAnomaly); // True anomaly in radians
+        var omega = DegreesToRadians(_planet.OrbitalData.argPeriapsis); // Argument of periapsis in radians
 
         // Calculate the distance from the central body at the current true anomaly
-        double r = CalculateDistance(a, e, nu);
+        var r = CalculateDistance(a, e, nu);
 
         // Convert the polar coordinates to Cartesian coordinates
         var (x, y) = CalculatePosition(r, nu, omega);
 
         return new Point(x + 400, y+400);
     }
-
-
-
-
-
-
-
-    // If you want to have interactions with the planet (for example, 
-    // if you want a command to focus on a planet when clicked), 
-    // you can add RelayCommands and associated methods here, similar to your Click method.
-
-    // [RelayCommand(CanExecute = nameof(CanFocusOnPlanet))]
-    // public void FocusOnPlanet()
-    // {
-    //     // Logic to focus on the planet or perform some other action.
-    // }
-
-    // private bool CanFocusOnPlanet => SomeCondition;
 }

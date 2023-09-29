@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using InteractiveResume.View_Model;
 using InteractiveResume.View_Model.EventArgs;
 using InteractiveResume.View_Model.NASA;
@@ -28,6 +26,8 @@ public partial class MainWindow : Window
     {
         DataContext = ((App)Application.Current).ServiceProvider.GetRequiredService<MainWindowViewModel>(); 
         InitializeComponent();
+        viewModel.ScreenWidth = SystemParameters.PrimaryScreenWidth;
+        viewModel.ScreenHeight = SystemParameters.PrimaryScreenHeight;
         Loaded += MainWindow_Loaded;
     }
 

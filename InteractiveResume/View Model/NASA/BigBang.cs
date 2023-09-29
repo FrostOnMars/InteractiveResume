@@ -6,10 +6,10 @@ namespace InteractiveResume.View_Model.NASA;
 
 public sealed class BigBang : ObservableObject
 {
-    private static readonly object LockObject = new object();
+    private static readonly object LockObject = new();
     private static BigBang _instance = null;
 
-    public List<Planet> Planets { get; } = new List<Planet>();
+    public List<Planet> Planets { get; } = new();
 
     private BigBang()
     {
