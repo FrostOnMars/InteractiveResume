@@ -35,32 +35,109 @@ public class OrbitalData
         
         foreach (var planet in _instance.Planets.OrderByDescending(p => p.OrbitalData.semimajorAxis))
         {
+            // This is the time scale factor
             planet.ScaleFactor = 40000;
             if (planet.OrbitalData == null) continue;
-            //another try catch
+            // TODO: need another try catch
 
             // Use local variables to hold the values
             var semiMajor = planet.OrbitalData.semimajorAxis;
-            var semiMinor = planet.OrbitalData.semiMinorAxis;
-            var velocity = planet.PlanetaryVelocity;
+            var semiMinor = CalculateSemiMinorAxis(planet.OrbitalData.semimajorAxis, planet.OrbitalData.eccentricity);
+            //var velocity = planet.PlanetaryVelocity;
 
-            planet.PlanetaryVelocity = CalculateRealOrbitalVelocity(planet.OrbitalData.semimajorAxis,
-                planet.OrbitalData.semiMinorAxis, planet.OrbitalData.sideralOrbit);
-            planet.EllipseCircumference = ResizeEllipseToFitScreen(ref semiMajor, ref semiMinor);
-            planet.EllipseCircumference = FindScaleFactorAndResize(ref semiMajor, ref semiMinor, ref scaleFactor);
+            //planet.PlanetaryVelocity = CalculateRealOrbitalVelocity(planet.OrbitalData.semimajorAxis,
+            //    planet.OrbitalData.semiMinorAxis, planet.OrbitalData.sideralOrbit);
+            //planet.EllipseCircumference = ResizeEllipseToFitScreen(ref semiMajor, ref semiMinor);
+            //planet.EllipseCircumference = FindScaleFactorAndResize(ref semiMajor, ref semiMinor, ref scaleFactor);
 
             //TODO: "2,000" should be replaced with a value from a slider that allows the user to choose between 0 - 5000 for simulation speed.
-            velocity = ComputeSimulationVelocity(velocity, planet.ScaleFactor);
+            //velocity = ComputeSimulationVelocity(velocity, planet.ScaleFactor);
 
             // Assign the modified values back to the properties
             planet.OrbitalData.semimajorAxis = semiMajor;
             planet.OrbitalData.semiMinorAxis = semiMinor;
-            planet.PlanetaryVelocity = velocity;
+            //planet.PlanetaryVelocity = velocity;
         }
 
+        ScaleOrbitsWithMinMax(_instance.Planets);
+        //ScalePlanetsToFitScreen(_instance.Planets);
         ScalePlanetDiameters(_instance.Planets);
 
     }
+
+    public void ScaleOrbitsWithMinMax(List<Planet> planets)
+    {
+        double minScreenOrbitSize = 100;
+        double maxScreenOrbitSize = 750;
+
+        double minOrbit = planets.Min(p => p.OrbitalData.semimajorAxis);
+        double maxOrbit = planets.Max(p => p.OrbitalData.semimajorAxis);
+
+        foreach (var planet in planets)
+        {
+            double originalSize = planet.OrbitalData.semimajorAxis;
+
+            // Determine what percentage the original size is of the total range
+            double percentOfOriginalRange = (originalSize - minOrbit) / (maxOrbit - minOrbit);
+
+            // Apply this percentage to the screen size range
+            double screenSize = minScreenOrbitSize + (percentOfOriginalRange * (maxScreenOrbitSize - minScreenOrbitSize));
+
+            // Calculate the scaling factor for the semimajorAxis
+            double scalingFactor = screenSize / originalSize;
+
+            planet.OrbitalData.semimajorAxis = screenSize;
+
+            // Apply the same scaling factor to the semiMinorAxis
+            planet.OrbitalData.semiMinorAxis *= scalingFactor;
+        }
+    }
+
+
+
+    public void ScalePlanetsToFitScreen(List<Planet> planets)
+    {
+        double maxScreenDimension = 750; // Adjust this as per your requirements.
+        double minScreenDimension = 10;  // Adjust this as per your requirements.
+
+        // 1. Determine the Range
+        double maxSemiMajor = planets.Max(p => p.OrbitalData.semimajorAxis);
+        double minSemiMajor = planets.Min(p => p.OrbitalData.semimajorAxis);
+
+        foreach (var planet in planets)
+        {
+            // 2. Scale the Values with Sigmoid
+            double scaledSemiMajor = SigmoidScale(planet.OrbitalData.semimajorAxis, maxSemiMajor, minSemiMajor);
+
+            // 3. Linearly Scale the Sigmoid Value to Screen Dimensions
+            planet.OrbitalData.semimajorAxis = minScreenDimension + (scaledSemiMajor * (maxScreenDimension - minScreenDimension));
+
+            // Ensure semi-minor axis is scaled accordingly to maintain the ellipse's proportions
+            double aspectRatio = planet.OrbitalData.semiMinorAxis / planet.OrbitalData.semimajorAxis;
+            planet.OrbitalData.semiMinorAxis = planet.OrbitalData.semimajorAxis * aspectRatio;
+        }
+    }
+
+
+    public double SigmoidScale(double value, double maxValue, double minValue)
+    {
+        double range = maxValue - minValue;
+        double mid = (maxValue + minValue) / 2;
+
+        double k = 50.0 / range;  // This controls the 'steepness' of the curve. You can adjust as required.
+        double xShifted = (value - mid) * k;
+
+        return 1.0 / (1.0 + Math.Exp(-xShifted));
+    }
+
+
+
+
+    public double CalculateSemiMinorAxis(double semiMajorAxis, double eccentricity)
+    {
+        return semiMajorAxis * Math.Sqrt(1 - eccentricity * eccentricity);
+    }
+
 
     /// <summary>
     /// Calculates the average orbital velocity of a planet with an elliptical orbit.
@@ -84,33 +161,30 @@ public class OrbitalData
 
     public void ScalePlanetDiameters(List<Planet> planets)
     {
-        // 1. Find max and min radii.
-        double maxRadius = planets.Max(p => p.OrbitalData.equaRadius);
+        // Define the minimum and maximum diameters for the display.
+        const double minDiameter = 20;
+        const double maxDiameter = 150;
+
+        // 1. Find the minimum and maximum equatorial radius.
         double minRadius = planets.Min(p => p.OrbitalData.equaRadius);
+        double maxRadius = planets.Max(p => p.OrbitalData.equaRadius);
 
-        // Define the desired average size and its range.
-        const double averageDiameter = 50;
-        const double sizeRange = 20;  // give or take based on real-life sizes
-
-        // 2. Determine scaling factor based on average size.
-        double averageRadius = planets.Average(p => p.OrbitalData.equaRadius);
-        double scaleFactor = averageDiameter / (2 * averageRadius);
-
-        // 3. Scale each planet's diameter.
+        // 2. Determine the scaling factor based on both minimum and maximum planet sizes.
         foreach (var planet in planets)
         {
-            double scaledDiameter = planet.OrbitalData.equaRadius * 2 * scaleFactor;
+            double originalDiameter = 2 * planet.OrbitalData.equaRadius;
 
-            // Ensure that the scaled values fall within the desired range.
-            double diameterDifference = averageDiameter - scaledDiameter;
-            if (Math.Abs(diameterDifference) > sizeRange)
-            {
-                scaledDiameter += Math.Sign(diameterDifference) * sizeRange;
-            }
+            // Determine what percentage the original diameter is of the total range.
+            double percentOfOriginalRange = (originalDiameter - 2 * minRadius) / (2 * (maxRadius - minRadius));
+
+            // Apply this percentage to the screen size range.
+            double scaledDiameter = minDiameter + (percentOfOriginalRange * (maxDiameter - minDiameter));
 
             planet.Diameter = scaledDiameter;
         }
     }
+
+
 
     public double FindScaleFactorAndResize(ref double semiMajorAxis, ref double semiMinorAxis, ref double existingScaleFactor )
     {

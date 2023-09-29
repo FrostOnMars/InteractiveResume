@@ -37,8 +37,8 @@ public class OrbitalDataModel
     public double meanRadius { get; set; }
     public object moons { get; set; }
     public string name { get; set; }
-    [JsonPropertyName("perihelion")]
     public double semiMinorAxis { get; set; }
+    public double perihelion { get; set; }
     public double polarRadius { get; set; }
     public double semimajorAxis { get; set; }
     public double sideralOrbit { get; set; }

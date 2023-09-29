@@ -8,8 +8,7 @@
     xmlns:nasa="clr-namespace:InteractiveResume.View_Model.NASA"
     xmlns:viewModel="clr-namespace:InteractiveResume.View_Model"
     x:Name="Planet"
-    Width="{Binding Diameter}"
-    Height="{Binding Diameter}"
+    Background="Transparent"
     d:DataContext="{d:DesignInstance {x:Type nasa:PlanetViewModel},
                                      d:IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
@@ -25,9 +24,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Width="100" Height="100">
-        <!--  The hidden path for the planet's animation (for X and Y)  -->
-        <Path x:Name="PlanetPathX" Visibility="Hidden">
+    <Grid>
+        <!--  The visible path for the planet's animation (for X)  -->
+        <Path x:Name="PlanetPathX" Stroke="Purple" StrokeThickness="2">
             <Path.Data>
                 <PathGeometry>
                     <PathFigure StartPoint="0,0">
@@ -40,7 +39,8 @@
             </Path.Data>
         </Path>
 
-        <Path x:Name="PlanetPathY" Visibility="Hidden">
+        <!--  The visible path for the planet's animation (for Y)  -->
+        <Path x:Name="PlanetPathY" Stroke="Purple" StrokeThickness="2">
             <Path.Data>
                 <PathGeometry>
                     <PathFigure StartPoint="0,0">
@@ -56,15 +56,16 @@
         <!--  The visual representation of the planet  -->
         <Button x:Name="PlanetButton" Style="{StaticResource PlanetaryButtonStyle}">
             <Button.RenderTransform>
-                <TranslateTransform x:Name="PlanetTransform" />
+                <TranslateTransform x:Name="PlanetTransform" X="{Binding X}" Y="{Binding Y}" />
+
             </Button.RenderTransform>
 
             <!--  Content of the Button  -->
             <Ellipse
                 Name="Ellipse"
-                Width="{Binding Diameter}"
-                Height="{Binding Diameter}"
-                Fill="{Binding PlanetColor, Converter={StaticResource ColorToBrushConverter}}" />
+                Width="50"
+                Height="50"
+                Fill="Red" />
 
             <!--  Animation  -->
             <Button.Triggers>
@@ -72,13 +73,13 @@
                     <BeginStoryboard>
                         <Storyboard RepeatBehavior="Forever">
                             <DoubleAnimationUsingPath
-                                PathGeometry="{Binding EllipsePath}"
+                                PathGeometry="{Binding XEllipsePath}"
                                 Storyboard.TargetName="PlanetTransform"
                                 Storyboard.TargetProperty="X"
                                 Duration="{Binding OrbitDuration}" />
 
                             <DoubleAnimationUsingPath
-                                PathGeometry="{Binding EllipsePath}"
+                                PathGeometry="{Binding YEllipsePath}"
                                 Storyboard.TargetName="PlanetTransform"
                                 Storyboard.TargetProperty="Y"
                                 Duration="{Binding OrbitDuration}" />
@@ -88,5 +89,4 @@
             </Button.Triggers>
         </Button>
     </Grid>
-
 </UserControl>

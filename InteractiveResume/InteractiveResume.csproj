@@ -22,7 +22,7 @@
   <ItemGroup>
     <Resource Include="Resources\Deep Space Banjo.wav" />
     <Resource Include="Resources\SPAAAAAACE.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

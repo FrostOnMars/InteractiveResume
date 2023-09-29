@@ -85,11 +85,11 @@
                             <SolidColorBrush Color="Transparent" />
                         </Grid.Background>
                         <Border
-                            Background="SlateBlue"
+                            Background="Transparent"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{Binding Diameter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PlanetControl}}, Converter={StaticResource HalfValueConverter}}"
-                        >
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <!--CornerRadius="{Binding Diameter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:PlanetControl}}, Converter={StaticResource HalfValueConverter}}"-->
+                        <!-->-->
                             <!--  Set the CornerRadius to half of Width or Height  -->
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>

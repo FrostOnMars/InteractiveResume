@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using InteractiveResume.View_Model;
+using InteractiveResume.View_Model.EventArgs;
 using InteractiveResume.View_Model.NASA;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +16,13 @@ public partial class MainWindow : Window
 {
     //determine how big the screen is (but start with static value - 800 x 800)
     //
+    public event EventHandler<PlanetViewModelEventArgs> OrbitalPathControlLoaded;
+    public void RaiseOrbitalPathControlLoadedEvent(PlanetViewModel viewModel)
+    {
+        OrbitalPathControlLoaded?.Invoke(this, new PlanetViewModelEventArgs(viewModel));
+    }
+
+
     private MainWindowViewModel viewModel => DataContext as MainWindowViewModel;
     public MainWindow()
     {
@@ -41,6 +50,13 @@ public partial class MainWindow : Window
         TheMainWindow.Width = ActualWidth;
         MediaPlayer.Source = new Uri(@"C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav", UriKind.Absolute);
         MediaPlayer.Play();
+
+
+
+        foreach (var planetViewModel in viewModel.PlanetViewModels)
+        {
+            RaiseOrbitalPathControlLoadedEvent(planetViewModel);
+        }
     }
 
     private void Button1_OnClick(object sender, RoutedEventArgs e)

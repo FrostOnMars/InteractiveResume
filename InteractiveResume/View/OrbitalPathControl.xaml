@@ -7,7 +7,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type nasa:PlanetViewModel}, d:IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance {x:Type nasa:OrbitalPathControlViewModel}, d:IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <!--  Merge the external resource dictionary for styles  -->
@@ -16,27 +16,18 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Canvas Height="800" Width="800">
+
         <!-- Orbital Path -->
         <Ellipse Width="{Binding SemiMajorAxis}" 
                  Height="{Binding SemiMinorAxis}" 
                  Stroke="Transparent" 
                  StrokeThickness="2"/>
 
-        <!-- Planet Button -->
-        <Button x:Name="PlanetButton"
-                Height="Auto"
-                Width="Auto"
-                Style="{StaticResource PlanetaryButtonStyle}" 
-                Content="{Binding Name}"
-                Click="PlanetButton_Click">
-        </Button>
-
-        <!-- Planet -->
+        <!-- Planet Control -->
         <local:PlanetControl x:Name="Planet" 
                              Canvas.Left="{Binding X}" 
                              Canvas.Top="{Binding Y}" />
 
-
-    </Grid>
+    </Canvas>
 </UserControl>

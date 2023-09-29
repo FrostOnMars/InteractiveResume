@@ -13,7 +13,9 @@
     Height="800"
     d:DataContext="{d:DesignInstance Type=viewModel:MainWindowViewModel}"
     mc:Ignorable="d"
-    Loaded="MainWindow_Loaded">
+    Loaded="MainWindow_Loaded"
+    
+    WindowState="Maximized">
 
 
     <!-- Background Image -->
@@ -221,23 +223,17 @@
             MediaFailed="MediaPlayer_MediaFailed"
             MediaEnded="MediaPlayer_MediaEnded"/>
 
-        <ItemsControl ItemsSource="{Binding PlanetViewModels}" Width="800" Height="800" >
-            <!-- This sets a fixed width and height for testing purposes -->
 
-            <ItemsControl.ItemsPanel>
-                <!-- This sets up the ItemsControl to use a Canvas for its items -->
-                <ItemsPanelTemplate>
-                    <Canvas />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
 
+        <!-- Here, bind to a collection of all your planet view models -->
+        <ItemsControl ItemsSource="{Binding PlanetViewModels}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <local:OrbitalPathControl DataContext="{Binding}" />
+                    <!-- Here, bind to the individual properties of each planet view model -->
+                    <local:PlanetControl />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
 
-            <!-- This is for positioning each item within the canvas based on its properties -->
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ContentPresenter">
                     <Setter Property="Canvas.Left" Value="{Binding X}" />
@@ -245,5 +241,7 @@
                 </Style>
             </ItemsControl.ItemContainerStyle>
         </ItemsControl>
+
+
     </Canvas>
 </Window>
