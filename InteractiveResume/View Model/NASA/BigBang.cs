@@ -29,25 +29,14 @@ public sealed class BigBang : ObservableObject
     {
         get
         {
-            if (_instance == null)
+            if (_instance != null) return _instance;
+            lock (LockObject)
             {
-                lock (LockObject)
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new BigBang();
-                    }
-                }
+                _instance ??= new BigBang();
             }
             return _instance;
         }
     }
-
-    public void CreatePlanets()
-    {
-        // Implement your planet creation logic here if needed.
-    }
-
 
 }
 public enum PlanetaryData

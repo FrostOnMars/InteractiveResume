@@ -95,60 +95,13 @@ public partial class PlanetViewModel : ObservableObject
                 SweepDirection = SweepDirection.Clockwise
             });
 
-            return new PathGeometry { Figures = { figure } };
-        }
-    }
-
-
-    public PathGeometry XEllipsePath
-    {
-        get
-        {
-            var geometry = new PathGeometry();
-            var figure = new PathFigure
+            return new PathGeometry
             {
-                // Starting at the right-most point of the ellipse
-                StartPoint = new Point(Planet.OrbitalData.semimajorAxis, 0),
-                IsClosed = false
+                Figures =
+                {
+                    figure
+                }
             };
-
-            var segment = new ArcSegment
-            {
-                // Orbit the entire ellipse
-                Size = new Size(Planet.OrbitalData.semimajorAxis, Planet.OrbitalData.semiMinorAxis),
-                IsLargeArc = true,
-                SweepDirection = SweepDirection.Clockwise
-            };
-
-            figure.Segments.Add(segment);
-            geometry.Figures.Add(figure);
-            return geometry;
-        }
-    }
-
-    public PathGeometry YEllipsePath
-    {
-        get
-        {
-            var geometry = new PathGeometry();
-            var figure = new PathFigure
-            {
-                // Starting at the top-most point of the ellipse
-                StartPoint = new Point(0, -Planet.OrbitalData.semiMinorAxis),
-                IsClosed = false
-            };
-
-            var segment = new ArcSegment
-            {
-                // Orbit the entire ellipse
-                Size = new Size(Planet.OrbitalData.semimajorAxis, Planet.OrbitalData.semiMinorAxis),
-                IsLargeArc = true,
-                SweepDirection = SweepDirection.Clockwise
-            };
-
-            figure.Segments.Add(segment);
-            geometry.Figures.Add(figure);
-            return geometry;
         }
     }
 

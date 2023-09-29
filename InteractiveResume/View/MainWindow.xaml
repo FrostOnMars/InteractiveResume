@@ -165,29 +165,6 @@
                     </Style>
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>
-
-
-            <!--  Here, bind to a collection of all your planet view models  -->
-            <!--
-        <ItemsControl ItemsSource="{Binding PlanetViewModels}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-            -->
-            <!--  Here, bind to the individual properties of each planet view model  -->
-            <!--
-                    <local:PlanetControl />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-            <ItemsControl.ItemContainerStyle>
-                <Style TargetType="ContentPresenter">
-                    <Setter Property="Canvas.Left" Value="{Binding X}" />
-                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                </Style>
-            </ItemsControl.ItemContainerStyle>
-        </ItemsControl>-->
-
-
-        </Canvas>
+           </Canvas>
     </ScrollViewer>
 </Window>

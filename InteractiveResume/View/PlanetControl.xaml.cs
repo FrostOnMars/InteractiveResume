@@ -14,6 +14,6 @@ public partial class PlanetControl : UserControl
     public PlanetControl()
     {
         InitializeComponent();
-        Diameter = Ellipse.Height;
+        //Diameter = Ellipse.Height;
     }
 }

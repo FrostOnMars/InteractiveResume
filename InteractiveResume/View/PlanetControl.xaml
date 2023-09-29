@@ -21,6 +21,7 @@
             <local:CenteringConverter x:Key="CenteringConverter" />
             <local:SizeConverter x:Key="SizeConverter" />
             <local:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+            <EllipseGeometry x:Key="EllipsePath" Center="0,0" RadiusX="100" RadiusY="50" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -60,33 +61,40 @@
         </Path>
 
         <!--  The visual representation of the planet  -->
-        <Button x:Name="PlanetButton" Style="{StaticResource PlanetaryButtonStyle}">
-            <Button.RenderTransform>
-                <TranslateTransform x:Name="PlanetTransform" X="{Binding X, Converter={StaticResource CenteringConverter}}" Y="{Binding Y, Converter={StaticResource CenteringConverter}}" />
+        <!--<Button x:Name="PlanetButton" Style="{StaticResource PlanetaryButtonStyle}">
+        <Button.RenderTransform>
+                <MatrixTransform x:Name="PlanetTransform" />
+            </Button.RenderTransform>-->
 
-            </Button.RenderTransform>
+            
 
-            <!--  Content of the Button  -->
+            <!--  Content of the Button  --><!--
             <Ellipse
                 Name="Ellipse"
                 Width="50"
                 Height="50"
                 Fill="Red" />
 
-            <!--  Animation  -->
-            <Button.Triggers>
+            --><!--  Animation  -->
+            <!--<Button.Triggers>
                 <EventTrigger RoutedEvent="Button.Loaded">
                     <BeginStoryboard>
                         <Storyboard RepeatBehavior="Forever">
-                            <DoubleAnimationUsingPath
+                            <MatrixAnimationUsingPath 
                                 PathGeometry="{Binding FullEllipsePath}"
+                                Duration="{Binding OrbitDuration}" 
+                                DoesRotateWithTangent="False" 
+                                RepeatBehavior="Forever"
                                 Storyboard.TargetName="PlanetTransform"
-                                Storyboard.TargetProperty="X"
-                                Duration="{Binding OrbitDuration}" />
-                        </Storyboard>
+                                Storyboard.TargetProperty="Matrix" />
+                            </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
             </Button.Triggers>
-        </Button>
+        </Button>-->
+
+        <Path Data="{StaticResource EllipsePath}" Stroke="Blue" StrokeThickness="1" />
+        
+
     </Grid>
 </UserControl>
