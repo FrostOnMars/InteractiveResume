@@ -92,11 +92,25 @@ public class OrbitalData
     {
         try
         {
-            foreach (var planet in _instance.Planets)
+            var planetNames = new List<string>
             {
-                var jsonString = GetPlanetDataFromRestApi(planet.Name);
-                if (string.IsNullOrEmpty(jsonString)) continue;
-                planet.OrbitalData = JsonConvert.DeserializeObject<OrbitalDataModel>(jsonString);
+                "Mercury",
+                "Venus",
+                "Earth",
+                "Mars",
+                "Jupiter",
+                "Saturn",
+                "Uranus",
+                "Neptune",
+                "Pluto"
+            };
+            foreach (var jsonString in planetNames
+                         .Select(GetPlanetDataFromRestApi)
+                         .Where(jsonString => string
+                             .IsNullOrEmpty(jsonString) == false))
+            {
+                _instance.Planets
+                    .Add(Planet.Terraform(JsonConvert.DeserializeObject<OrbitalDataModel>(jsonString)));
             }
         }
         catch (Exception ex)

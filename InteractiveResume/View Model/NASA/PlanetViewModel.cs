@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using InteractiveResume.Model;
 
 namespace InteractiveResume.View_Model.NASA;
 
@@ -176,4 +177,5 @@ public partial class PlanetViewModel : ObservableObject
 
         return new Point(x + 400, y+400);
     }
+
 }

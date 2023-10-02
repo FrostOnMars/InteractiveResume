@@ -1,4 +1,6 @@
-﻿using doubleeractiveResume.Model.Planets;
+﻿using System.Windows.Controls.Primitives;
+using doubleeractiveResume.Model.Planets;
+using InteractiveResume.View_Model.NASA;
 
 namespace InteractiveResume.Model.Planets;
 
@@ -25,6 +27,16 @@ public class Planet
         return new Planet
         {
             Name = name
+        };
+    }
+
+    public static Planet Terraform(OrbitalDataModel orbitalData)
+    {
+        return new Planet
+        {
+            OrbitalData = orbitalData,
+            Name = orbitalData.englishName,
+
         };
     }
 }
