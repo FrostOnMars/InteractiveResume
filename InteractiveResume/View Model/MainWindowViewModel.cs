@@ -33,29 +33,29 @@ public partial class MainWindowViewModel : ObservableObject
 
     public MainWindowViewModel()
     {
-        PlanetViewModels = new ObservableCollection<PlanetViewModel>();
-        var instance = BigBang.Instance;
-        var orbitalData = new OrbitalData();
-        // Subscribe to the event
-        orbitalData.ErrorOccurred += HandleOrbitalDataError;
-        orbitalData.GetData(PlanetaryData.OrbitalData, ScreenWidth, ScreenHeight);
-        // Unsubscribe from the event, now that we are done getting the data.
-        orbitalData.ErrorOccurred -= HandleOrbitalDataError;
+        //PlanetViewModels = new ObservableCollection<PlanetViewModel>();
+        //var instance = BigBang.Instance;
+        //var orbitalData = new OrbitalData();
+        //// Subscribe to the event
+        //orbitalData.ErrorOccurred += HandleOrbitalDataError;
+        //orbitalData.GetData(PlanetaryData.OrbitalData, ScreenWidth, ScreenHeight);
+        //// Unsubscribe from the event, now that we are done getting the data.
+        //orbitalData.ErrorOccurred -= HandleOrbitalDataError;
 
+        ////foreach (var p in BigBang.Instance.Planets)
+        ////{
+        ////    PlanetViewModels.Add(new PlanetViewModel(p));
+        ////}
+
+        //PlanetViewModels ??= new ObservableCollection<PlanetViewModel>();
         //foreach (var p in BigBang.Instance.Planets)
         //{
         //    PlanetViewModels.Add(new PlanetViewModel(p));
         //}
 
-        PlanetViewModels ??= new ObservableCollection<PlanetViewModel>();
-        foreach (var p in BigBang.Instance.Planets)
-        {
-            PlanetViewModels.Add(new PlanetViewModel(p));
-        }
+        //FullName = $"{_firstName} {_lastName}";
 
-        FullName = $"{_firstName} {_lastName}";
-
-        Debug.WriteLine($"Number of Planets: {PlanetViewModels.Count}");
+        //Debug.WriteLine($"Number of Planets: {PlanetViewModels.Count}");
 
     }
 

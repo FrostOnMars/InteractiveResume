@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
+    <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.1.6" />
   </ItemGroup>
 
   <ItemGroup>

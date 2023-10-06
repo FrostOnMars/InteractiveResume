@@ -19,7 +19,7 @@ public class OrbitalData
     public delegate void ErrorHandler(string errorMessage);
 
     // Define the event using the delegate.
-    public event ErrorHandler? ErrorOccurred;
+    public static event ErrorHandler? ErrorOccurred;
 
     /// <summary>
     /// Retrieves the data for the specified planetary data type and performs necessary transformations.
@@ -37,7 +37,7 @@ public class OrbitalData
             {
                 case PlanetaryData.OrbitalData:
                     GetDataFromRestApi();
-                    TransformDataToUsableSizes(screenWidth, screenHeight);
+                    TransformData.ToUsableSizes(screenWidth, screenHeight);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dataType), dataType, null);
@@ -56,30 +56,8 @@ public class OrbitalData
     /// This method will adjust the orbital data sizes and scales. 
     /// Any exceptions encountered will raise the ErrorOccurred event.
     /// </remarks>
-    private void TransformDataToUsableSizes(double screenWidth, double screenHeight)
-    {
-        try
-        {
-            foreach (var planet in _instance.Planets.OrderByDescending(p => p.OrbitalData.semimajorAxis))
-            {
-                // This is the time scale factor
-                planet.ScaleFactor = 40000;
-                if (planet.OrbitalData == null) continue;
-
-                // Modify the semi major and semi minor axes of the ellipse
-                planet.OrbitalData.semimajorAxis = planet.OrbitalData.semimajorAxis;
-                planet.OrbitalData.semiMinorAxis = CalculateSemiMinorAxis(planet.OrbitalData.semimajorAxis, planet.OrbitalData.eccentricity);
-            }
-
-            ScaleOrbitsWithScreenDimensions(_instance.Planets, screenWidth, screenHeight);
-            ScalePlanetDiameters(_instance.Planets);
-        }
-        catch (Exception ex)
-        {
-            // Raise the event when an error occurs.
-            ErrorOccurred?.Invoke(ex.Message);
-        }
-    }
+    
+    //this used to be the TransformData class
 
     /// <summary>
     /// Fetches planetary orbital data from a REST API and assigns it to the planet objects.

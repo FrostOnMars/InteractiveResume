@@ -120,14 +120,37 @@
         </Style>
     </Window.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Column ="1" Grid.Row ="1"  Name ="SqlTest" Height ="100" Width="100" Content ="Sql Test" Click="OnClick" DragEnter="OnEnter" DragLeave="OnLeave"/>
+            <MediaElement
+                Grid.Column="1"
+                Grid.Row ="2"
+                x:Name="MediaPlayer"
+                LoadedBehavior="Manual"
+                MediaEnded="MediaPlayer_MediaEnded"
+                MediaFailed="MediaPlayer_MediaFailed"
+                Source="C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav"
+                UnloadedBehavior="Stop"
+                Volume="0.5"/>
+        </Grid>
         <!--  Main Window Grid  -->
-        <Canvas
+        <!--<Canvas
             Name="MainWindowCanvas"
             MinHeight="{Binding ElementName=TheMainWindow, Path=ActualHeight}"
             MinWidth="{Binding ElementName=TheMainWindow, Path=ActualWidth}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-            <!--<Canvas.RenderTransform>
+            --><!--<Canvas.RenderTransform>
                 --><!--<TransformGroup>
                     <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
                     <SkewTransform/>
@@ -135,17 +158,10 @@
                     <TranslateTransform/>
                 </TransformGroup>--><!--
             </Canvas.RenderTransform>-->
-            <MediaElement
-                x:Name="MediaPlayer"
-                LoadedBehavior="Manual"
-                MediaEnded="MediaPlayer_MediaEnded"
-                MediaFailed="MediaPlayer_MediaFailed"
-                Source="C:\Code\InteractiveResume\InteractiveResume\Resources\Deep Space Banjo.wav"
-                UnloadedBehavior="Stop"
-                Volume="0.5" />
+           
 
-            <ItemsControl ItemsSource="{Binding PlanetViewModels}">
-                <!-- Change the ItemsPanel to a Canvas so items can overlap -->
+            <!--<ItemsControl ItemsSource="{Binding PlanetViewModels}">
+                --><!-- Change the ItemsPanel to a Canvas so items can overlap --><!--
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas />
@@ -164,7 +180,7 @@
                         <Setter Property="Canvas.Top" Value="{Binding Y}" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
-            </ItemsControl>
-           </Canvas>
+            </ItemsControl>--><!--
+           </Canvas>-->
     </ScrollViewer>
 </Window>

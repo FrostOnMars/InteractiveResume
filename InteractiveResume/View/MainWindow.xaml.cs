@@ -14,11 +14,11 @@ public partial class MainWindow : Window
 {
     //determine how big the screen is (but start with static value - 800 x 800)
     //
-    public event EventHandler<PlanetViewModelEventArgs> OrbitalPathControlLoaded;
-    public void RaiseOrbitalPathControlLoadedEvent(PlanetViewModel viewModel)
-    {
-        OrbitalPathControlLoaded?.Invoke(this, new PlanetViewModelEventArgs(viewModel));
-    }
+    //public event EventHandler<PlanetViewModelEventArgs> OrbitalPathControlLoaded;
+    //public void RaiseOrbitalPathControlLoadedEvent(PlanetViewModel viewModel)
+    //{
+    //    OrbitalPathControlLoaded?.Invoke(this, new PlanetViewModelEventArgs(viewModel));
+    //}
 
 
     private MainWindowViewModel viewModel => DataContext as MainWindowViewModel;
@@ -52,11 +52,11 @@ public partial class MainWindow : Window
         MediaPlayer.Play();
 
 
-
-        foreach (var planetViewModel in viewModel.PlanetViewModels)
-        {
-            RaiseOrbitalPathControlLoadedEvent(planetViewModel);
-        }
+        // uh oh bad code, shouldn't be calling on other view models from here
+        //foreach (var planetViewModel in viewModel.PlanetViewModels)
+        //{
+        //    RaiseOrbitalPathControlLoadedEvent(planetViewModel);
+        //}
     }
 
     private void Button1_OnClick(object sender, RoutedEventArgs e)
@@ -95,6 +95,21 @@ public partial class MainWindow : Window
 
     }
     private void Button7_OnClick(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void OnClick(object sender, RoutedEventArgs e)
+    {
+        SqlController.CreateTable();
+    }
+
+    private void OnEnter(object sender, DragEventArgs e)
+    {
+
+    }
+
+    private void OnLeave(object sender, DragEventArgs e)
     {
 
     }

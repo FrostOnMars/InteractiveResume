@@ -20,12 +20,12 @@ public partial class OrbitalPathControl : UserControl
         InitializeComponent();
         // Assuming mainWindow is an instance of your MainWindow.
         var mainWindow = Application.Current.MainWindow as MainWindow;
-        if (mainWindow != null)
-        {
-            mainWindow.OrbitalPathControlLoaded += HandleOrbitalPathControlLoaded;
-        }
+        //if (mainWindow != null)
+        //{
+        //    mainWindow.OrbitalPathControlLoaded += HandleOrbitalPathControlLoaded;
+        //}
 
-        mainWindow.OrbitalPathControlLoaded += HandleOrbitalPathControlLoaded;
+        //mainWindow.OrbitalPathControlLoaded += HandleOrbitalPathControlLoaded;
     }
 
     private void HandleOrbitalPathControlLoaded(object sender, PlanetViewModelEventArgs e)
