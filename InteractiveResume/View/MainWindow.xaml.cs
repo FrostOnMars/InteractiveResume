@@ -101,7 +101,7 @@ public partial class MainWindow : Window
 
     private void OnClick(object sender, RoutedEventArgs e)
     {
-        SqlController.CreateTable();
+        SqlController.InsertResumeHeader();
     }
 
     private void OnEnter(object sender, DragEventArgs e)
