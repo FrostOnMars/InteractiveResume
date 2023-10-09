@@ -101,7 +101,9 @@ public partial class MainWindow : Window
 
     private void OnClick(object sender, RoutedEventArgs e)
     {
-        SqlController.InsertResumeHeader();
+        var header = SqlController.GetAllResumeHeaders();
+        var education = SqlController.GetAllResumeEducationModels();
+        ;
     }
 
     private void OnEnter(object sender, DragEventArgs e)
