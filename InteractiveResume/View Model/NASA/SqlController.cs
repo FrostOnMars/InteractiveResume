@@ -73,5 +73,37 @@ public class SqlController
 
         return resumeHeaders;
     }
+
+    public static List<ResumeSkillsModel> GetAllResumeSkills()
+    {
+        var resumeSkills = new List<ResumeSkillsModel>();
+
+        using var connection = new SQLiteConnection("Data Source=ResumeDataFile.db");
+        connection.Open();
+
+        var query = "SELECT * FROM ResumeSkills";
+        
+        using (var command = new SQLiteCommand(query, connection))
+        {
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var resumeSkill = new ResumeSkillsModel
+                {
+                    AutoId = reader.GetInt32(0),
+                    SkillType = reader.GetString(1),
+                    Skill = reader.GetString(2),
+                    ExampleWhereUsed = reader.IsDBNull(3) ? null : reader.GetString(3)
+
+                };
+
+                resumeSkills.Add(resumeSkill);
+            }
+        }
+
+        connection.Close();
+
+        return resumeSkills;
+    }
 }
 

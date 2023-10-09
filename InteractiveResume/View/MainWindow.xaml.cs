@@ -101,8 +101,9 @@ public partial class MainWindow : Window
 
     private void OnClick(object sender, RoutedEventArgs e)
     {
-        var header = SqlController.GetAllResumeHeaders();
-        var education = SqlController.GetAllResumeEducationModels();
+        //var header = SqlController.GetAllResumeHeaders();
+        //var education = SqlController.GetAllResumeEducationModels();
+        var skills = SqlController.GetAllResumeSkills();
         ;
     }
 
